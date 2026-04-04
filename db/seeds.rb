@@ -1,6 +1,18 @@
-require "faker"
-
 puts "Seeding database..."
+
+# Sample descriptions for tasks
+descriptions = [
+  "This task needs to be completed as part of the current sprint.",
+  "Important deliverable that impacts the project timeline.",
+  "Review existing implementation and make necessary improvements.",
+  "Coordinate with the team to ensure proper implementation.",
+  "Research best practices and apply them to our codebase.",
+  "Ensure thorough testing before marking as complete.",
+  "Document the process and update the wiki accordingly.",
+  "This blocks other tasks and should be prioritized.",
+  "Follow up on feedback from the last review session.",
+  "Align with the design specs provided by the team."
+]
 
 # Create demo user
 demo = User.find_or_create_by!(email: "demo@example.com") do |u|
@@ -9,9 +21,10 @@ demo = User.find_or_create_by!(email: "demo@example.com") do |u|
 end
 
 # Create additional users
-users = 4.times.map do |i|
+user_names = ["Alice Johnson", "Bob Smith", "Carol Davis", "Dan Wilson"]
+users = user_names.each_with_index.map do |name, i|
   User.find_or_create_by!(email: "user#{i + 1}@example.com") do |u|
-    u.name = Faker::Name.name
+    u.name = name
     u.password = "password123"
   end
 end
@@ -53,7 +66,7 @@ boards.each do |board|
   titles = task_titles.sample(rand(8..12))
   titles.each_with_index do |title, i|
     task = board.tasks.find_or_create_by!(title: title) do |t|
-      t.description = Faker::Lorem.paragraph(sentence_count: rand(1..3))
+      t.description = descriptions.sample
       t.status = statuses.sample
       t.priority = priorities.sample
       t.position = i
