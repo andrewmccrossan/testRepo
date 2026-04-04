@@ -1,0 +1,19 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>Boards</h1>
+  <%= link_to "New Board", new_board_path, class: "btn btn-primary" %>
+</div>
+
+<div class="row">
+  <% @boards.each do |board| %>
+    <div class="col-md-4 mb-4">
+      <%= render "board_card", board: board %>
+    </div>
+  <% end %>
+</div>
+
+<% if @boards.empty? %>
+  <div class="text-center text-muted mt-5">
+    <h4>No boards yet</h4>
+    <p>Create your first board to start tracking tasks.</p>
+  </div>
+<% end %>

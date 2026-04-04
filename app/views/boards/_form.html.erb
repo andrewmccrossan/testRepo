@@ -1,0 +1,24 @@
+<%= form_with(model: board, class: "mt-3") do |f| %>
+  <% if board.errors.any? %>
+    <div class="alert alert-danger">
+      <h5><%= pluralize(board.errors.count, "error") %> prevented this board from being saved:</h5>
+      <ul class="mb-0">
+        <% board.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.label :name, class: "form-label" %>
+    <%= f.text_field :name, class: "form-control", required: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :description, class: "form-label" %>
+    <%= f.text_area :description, class: "form-control", rows: 3 %>
+  </div>
+
+  <%= f.submit class: "btn btn-primary" %>
+<% end %>

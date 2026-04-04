@@ -1,0 +1,81 @@
+<div class="row">
+  <div class="col-md-8">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h1><%= @task.title %></h1>
+      <div>
+        <%= link_to "Edit", edit_board_task_path(@board, @task), class: "btn btn-outline-secondary btn-sm me-2" %>
+        <%= button_to "Delete", board_task_path(@board, @task), method: :delete,
+              class: "btn btn-outline-danger btn-sm",
+              data: { turbo_confirm: "Delete this task?" } %>
+      </div>
+    </div>
+
+    <% if @task.description.present? %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">Description</h6>
+          <p><%= simple_format(@task.description) %></p>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <strong>Status:</strong>
+        <% status_colors = { "todo" => "secondary", "in_progress" => "primary", "in_review" => "warning", "done" => "success" } %>
+        <span class="badge bg-<%= status_colors[@task.status] %>"><%= @task.status.titleize %></span>
+      </div>
+      <div class="col-md-4">
+        <strong>Priority:</strong>
+        <% priority_colors = { "low" => "success", "medium" => "info", "high" => "warning", "urgent" => "danger" } %>
+        <span class="badge bg-<%= priority_colors[@task.priority] %>"><%= @task.priority.capitalize %></span>
+      </div>
+      <div class="col-md-4">
+        <strong>Due Date:</strong>
+        <span class="<%= @task.due_date && @task.due_date < Date.current ? 'text-danger' : '' %>">
+          <%= @task.due_date&.strftime("%B %d, %Y") || "Not set" %>
+        </span>
+      </div>
+    </div>
+
+    <h5>Quick Status Update</h5>
+    <div class="btn-group mb-3">
+      <% %w[todo in_progress in_review done].each do |status| %>
+        <%= button_to status.titleize,
+              update_status_board_task_path(@board, @task),
+              params: { status: status },
+              method: :patch,
+              class: "btn btn-sm #{@task.status == status ? 'btn-primary' : 'btn-outline-primary'}" %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">
+        <strong>Assignees</strong>
+      </div>
+      <ul class="list-group list-group-flush">
+        <% @task.assignments.includes(:user).each do |assignment| %>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <%= assignment.user.name %>
+            <%= button_to "Remove", board_task_assignment_path(@board, @task, assignment),
+                  method: :delete, class: "btn btn-outline-danger btn-sm" %>
+          </li>
+        <% end %>
+        <% if @task.assignees.empty? %>
+          <li class="list-group-item text-muted">No assignees</li>
+        <% end %>
+      </ul>
+      <div class="card-body">
+        <%= form_with url: board_task_assignments_path(@board, @task), method: :post, class: "d-flex gap-2" do |f| %>
+          <%= f.select :user_id, User.where.not(id: @task.assignee_ids).map { |u| [u.name, u.id] },
+                { prompt: "Select user..." }, class: "form-select form-select-sm" %>
+          <%= f.submit "Assign", class: "btn btn-sm btn-outline-primary" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= link_to "Back to Board", board_path(@board), class: "btn btn-link mt-3" %>

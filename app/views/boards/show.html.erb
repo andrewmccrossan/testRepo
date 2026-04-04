@@ -1,0 +1,34 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h1><%= @board.name %></h1>
+    <p class="text-muted mb-0"><%= @board.description %></p>
+    <small class="text-muted">Owner: <%= @board.owner.name %></small>
+  </div>
+  <div>
+    <%= link_to "New Task", new_board_task_path(@board), class: "btn btn-success me-2" %>
+    <% if @board.owner == current_user %>
+      <%= link_to "Edit Board", edit_board_path(@board), class: "btn btn-outline-secondary me-2" %>
+      <%= button_to "Delete Board", board_path(@board), method: :delete,
+            class: "btn btn-outline-danger",
+            data: { turbo_confirm: "Are you sure you want to delete this board and all its tasks?" } %>
+    <% end %>
+  </div>
+</div>
+
+<div class="row">
+  <% %w[todo in_progress in_review done].each do |status| %>
+    <div class="col-md-3">
+      <div class="card bg-light">
+        <div class="card-header">
+          <strong><%= status.titleize %></strong>
+          <span class="badge bg-secondary float-end"><%= (@tasks_by_status[status] || []).count %></span>
+        </div>
+        <div class="card-body" style="min-height: 200px; max-height: 600px; overflow-y: auto;">
+          <% (@tasks_by_status[status] || []).each do |task| %>
+            <%= render "tasks/task_card", task: task, board: @board %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

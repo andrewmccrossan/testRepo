@@ -1,0 +1,3 @@
+<h1>Edit Task</h1>
+<%= render "form", task: @task, board: @board %>
+<%= link_to "Back to Task", board_task_path(@board, @task), class: "btn btn-link mt-2" %>
