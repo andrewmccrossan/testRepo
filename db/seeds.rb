@@ -70,7 +70,7 @@ boards.each do |board|
       t.status = statuses.sample
       t.priority = priorities.sample
       t.position = i
-      t.due_date = [nil, Date.current + rand(-5..30).days].sample
+      t.due_date = [nil, Date.current + rand(1..30).days].sample
     end
     task.assignees = all_users.sample(rand(1..3)) if task.assignees.empty?
   end
