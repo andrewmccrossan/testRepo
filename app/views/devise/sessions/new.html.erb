@@ -1,33 +1,31 @@
 <div class="row justify-content-center mt-5">
-  <div class="col-md-5 col-lg-4">
-    <div class="card">
-      <div class="card-body p-4">
-        <h2 class="text-center mb-4">Welcome back</h2>
+  <div class="col-11 col-md-5 col-lg-4">
+    <div class="card auth-mirror">
+      <h2 class="text-center mb-4">Welcome back</h2>
 
-        <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-          <div class="mb-3">
-            <%= f.label :email, class: "form-label" %>
-            <%= f.email_field :email, class: "form-control", autofocus: true, autocomplete: "email" %>
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        <div class="mb-3">
+          <%= f.label :email, class: "form-label" %>
+          <%= f.email_field :email, class: "form-control", autofocus: true, autocomplete: "email", placeholder: "you@example.com" %>
+        </div>
+
+        <div class="mb-3">
+          <%= f.label :password, class: "form-label" %>
+          <%= f.password_field :password, class: "form-control", autocomplete: "current-password" %>
+        </div>
+
+        <% if devise_mapping.rememberable? %>
+          <div class="mb-3 form-check">
+            <%= f.check_box :remember_me, class: "form-check-input" %>
+            <%= f.label :remember_me, class: "form-check-label" %>
           </div>
-
-          <div class="mb-3">
-            <%= f.label :password, class: "form-label" %>
-            <%= f.password_field :password, class: "form-control", autocomplete: "current-password" %>
-          </div>
-
-          <% if devise_mapping.rememberable? %>
-            <div class="mb-3 form-check">
-              <%= f.check_box :remember_me, class: "form-check-input" %>
-              <%= f.label :remember_me, class: "form-check-label" %>
-            </div>
-          <% end %>
-
-          <%= f.submit "Sign in", class: "btn btn-primary w-100 mt-2" %>
         <% end %>
 
-        <div class="mt-4 text-center">
-          <%= render "devise/shared/links" %>
-        </div>
+        <%= f.submit "Sign in", class: "btn btn-primary w-100 mt-2" %>
+      <% end %>
+
+      <div class="mt-4 text-center">
+        <%= render "devise/shared/links" %>
       </div>
     </div>
   </div>
