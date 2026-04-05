@@ -16,6 +16,7 @@
   --accent-purple: #bc8cff;
   --accent-orange: #d29922;
   --accent-red: #f85149;
+  --sheen-angle: 135deg;
 }
 
 body {
@@ -25,7 +26,185 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Navbar */
+/* ========== BLOB / MIRROR SHAPES ========== */
+/* Asymmetrical organic border-radius for that curvy mirror look */
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  transition: border-color 0.3s ease, transform 0.25s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  padding: 0.25rem;
+}
+
+/* Glossy sheen overlay */
+.card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    var(--sheen-angle),
+    transparent 0%,
+    transparent 40%,
+    rgba(255, 255, 255, 0.03) 45%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 55%,
+    transparent 60%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+  transition: transform 0.6s ease;
+}
+
+.card:hover::before {
+  transform: translateX(30%) translateY(30%);
+}
+
+.card:hover {
+  border-color: rgba(188, 140, 255, 0.4);
+  transform: translateY(-3px) scale(1.01);
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(88, 166, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.card > * {
+  position: relative;
+  z-index: 2;
+}
+
+.card-header {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.card-footer {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Board cards — each one gets a slightly different blob shape */
+.col-md-4:nth-child(1) .card {
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+}
+.col-md-4:nth-child(2) .card {
+  border-radius: 70% 30% 30% 70% / 60% 40% 60% 40%;
+}
+.col-md-4:nth-child(3) .card {
+  border-radius: 40% 60% 50% 50% / 70% 30% 70% 30%;
+}
+.col-md-4:nth-child(4) .card {
+  border-radius: 60% 40% 70% 30% / 40% 60% 30% 70%;
+}
+.col-md-4:nth-child(5) .card {
+  border-radius: 50% 50% 30% 70% / 50% 70% 30% 50%;
+}
+.col-md-4:nth-child(6) .card {
+  border-radius: 35% 65% 60% 40% / 45% 55% 45% 55%;
+}
+
+/* ========== KANBAN COLUMNS ========== */
+.kanban-column {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 24% 76% 76% 24% / 20% 20% 80% 80%;
+  min-height: 300px;
+  overflow: hidden;
+}
+
+.kanban-column::before {
+  border-radius: inherit;
+}
+
+.kanban-column:nth-child(1) .card.kanban-column,
+.col-md-3:nth-child(1) .kanban-column {
+  border-radius: 24% 76% 76% 24% / 20% 20% 80% 80%;
+}
+.col-md-3:nth-child(2) .kanban-column {
+  border-radius: 76% 24% 24% 76% / 30% 70% 30% 70%;
+}
+.col-md-3:nth-child(3) .kanban-column {
+  border-radius: 30% 70% 60% 40% / 60% 40% 60% 40%;
+}
+.col-md-3:nth-child(4) .kanban-column {
+  border-radius: 70% 30% 40% 60% / 40% 60% 40% 60%;
+}
+
+.kanban-column .card-header {
+  border-radius: 0;
+  padding: 1rem 1.25rem;
+}
+
+.kanban-column .card-body {
+  padding: 0.75rem;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.kanban-column:hover {
+  transform: none;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ========== TASK CARDS (inside kanban) ========== */
+.task-card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 40% 60% 55% 45% / 55% 45% 55% 45%;
+  padding: 1rem;
+  margin-bottom: 0.6rem;
+  transition: border-color 0.2s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Sheen on task cards */
+.task-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    transparent 42%,
+    rgba(255, 255, 255, 0.04) 48%,
+    rgba(255, 255, 255, 0.07) 50%,
+    rgba(255, 255, 255, 0.04) 52%,
+    transparent 58%,
+    transparent 100%
+  );
+  pointer-events: none;
+  transition: transform 0.5s ease;
+}
+
+.task-card:hover::before {
+  transform: translateX(25%) translateY(25%);
+}
+
+.task-card:hover {
+  border-color: var(--accent-purple);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Vary task card shapes */
+.task-card:nth-child(odd) {
+  border-radius: 40% 60% 55% 45% / 55% 45% 55% 45%;
+}
+.task-card:nth-child(even) {
+  border-radius: 55% 45% 40% 60% / 45% 55% 50% 50%;
+}
+
+/* ========== NAVBAR ========== */
 .navbar {
   background: var(--bg-secondary) !important;
   border-bottom: 1px solid var(--border-color);
@@ -39,116 +218,81 @@ body {
   color: var(--text-primary) !important;
 }
 
-/* Cards */
-.card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  transition: border-color 0.2s ease, transform 0.15s ease;
+/* ========== BUTTONS — pill/blob shapes ========== */
+.btn {
+  border-radius: 60% 40% 55% 45% / 55% 45% 55% 45%;
+  padding: 0.5rem 1.4rem;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s ease;
 }
 
-.card:hover {
-  border-color: var(--accent-blue);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+  border-radius: inherit;
 }
 
-.card-header {
-  background: rgba(255, 255, 255, 0.03) !important;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.card-footer {
-  background: rgba(255, 255, 255, 0.02) !important;
-  border-top: 1px solid var(--border-color);
-}
-
-/* Kanban columns */
-.kanban-column {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  min-height: 300px;
-}
-
-.kanban-column .card-header {
-  border-radius: 12px 12px 0 0;
-  padding: 1rem;
-}
-
-.kanban-column .card-body {
-  padding: 0.75rem;
-  max-height: 600px;
-  overflow-y: auto;
-}
-
-/* Task cards in kanban */
-.task-card {
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 0.75rem;
-  margin-bottom: 0.5rem;
-  transition: border-color 0.2s ease;
-}
-
-.task-card:hover {
-  border-color: var(--accent-purple);
-  transform: none;
-  box-shadow: none;
-}
-
-/* Buttons */
 .btn-primary {
   background: var(--accent-blue);
   border-color: var(--accent-blue);
-  font-weight: 500;
-  border-radius: 8px;
-  padding: 0.5rem 1.25rem;
 }
 
 .btn-primary:hover {
   background: #4c8fdb;
   border-color: #4c8fdb;
+  transform: scale(1.05);
 }
 
 .btn-success {
   background: var(--accent-green);
   border-color: var(--accent-green);
-  font-weight: 500;
-  border-radius: 8px;
 }
 
 .btn-outline-secondary {
   border-color: var(--border-color);
   color: var(--text-secondary);
-  border-radius: 8px;
 }
 
 .btn-outline-secondary:hover {
   background: var(--bg-tertiary);
   border-color: var(--text-secondary);
   color: var(--text-primary);
+  transform: scale(1.05);
 }
 
 .btn-outline-danger {
-  border-radius: 8px;
+  /* inherits blob shape */
 }
 
 .btn-outline-primary {
   border-color: var(--accent-blue);
   color: var(--accent-blue);
-  border-radius: 8px;
 }
 
-/* Forms */
+.btn-sm {
+  padding: 0.35rem 1rem;
+}
+
+/* ========== FORMS — organic input shapes ========== */
 .form-control,
 .form-select {
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
-  border-radius: 8px;
-  padding: 0.6rem 0.75rem;
+  border-radius: 50% 50% 50% 50% / 80% 80% 80% 80%;
+  padding: 0.65rem 1.2rem;
 }
 
 .form-control:focus,
@@ -157,6 +301,10 @@ body {
   border-color: var(--accent-blue);
   color: var(--text-primary);
   box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+}
+
+textarea.form-control {
+  border-radius: 30% 70% 70% 30% / 85% 85% 15% 15%;
 }
 
 .form-label {
@@ -171,6 +319,7 @@ body {
 .form-check-input {
   background-color: var(--bg-tertiary);
   border-color: var(--border-color);
+  border-radius: 50%;
 }
 
 .form-check-input:checked {
@@ -178,13 +327,13 @@ body {
   border-color: var(--accent-blue);
 }
 
-/* Badges */
+/* ========== BADGES — soft pill blobs ========== */
 .badge {
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.3px;
-  border-radius: 6px;
-  padding: 0.35em 0.65em;
+  border-radius: 60% 40% 50% 50% / 60% 60% 40% 40%;
+  padding: 0.4em 0.8em;
 }
 
 .badge.bg-secondary {
@@ -199,10 +348,11 @@ body {
 .badge.bg-warning { background: rgba(210, 153, 34, 0.15) !important; color: var(--accent-orange); border: 1px solid rgba(210, 153, 34, 0.3); }
 .badge.bg-danger { background: rgba(248, 81, 73, 0.15) !important; color: var(--accent-red); border: 1px solid rgba(248, 81, 73, 0.3); }
 
-/* Alerts */
+/* ========== ALERTS — blob shaped ========== */
 .alert {
-  border-radius: 10px;
+  border-radius: 40% 60% 60% 40% / 60% 40% 60% 40%;
   border: 1px solid var(--border-color);
+  padding: 1rem 1.5rem;
 }
 
 .alert-success {
@@ -217,7 +367,7 @@ body {
   color: var(--accent-red);
 }
 
-/* Links */
+/* ========== LINKS ========== */
 a {
   color: var(--accent-blue);
   text-decoration: none;
@@ -227,14 +377,33 @@ a:hover {
   color: #79b8ff;
 }
 
-/* List group (task detail sidebar) */
+/* ========== LIST GROUP (task detail sidebar) ========== */
 .list-group-item {
   background: var(--bg-tertiary);
   border-color: var(--border-color);
   color: var(--text-primary);
 }
 
-/* Scrollbar */
+/* Auth page card — big elegant mirror shape */
+.row.justify-content-center .card {
+  border-radius: 35% 65% 60% 40% / 40% 60% 40% 60%;
+  padding: 0.5rem;
+}
+
+.row.justify-content-center .card::before {
+  background: linear-gradient(
+    145deg,
+    transparent 0%,
+    transparent 35%,
+    rgba(255, 255, 255, 0.04) 42%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.04) 58%,
+    transparent 65%,
+    transparent 100%
+  );
+}
+
+/* ========== SCROLLBAR ========== */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -252,13 +421,26 @@ a:hover {
   background: var(--text-secondary);
 }
 
-/* Page headings */
+/* ========== TYPOGRAPHY ========== */
 h1, h2, h3, h4, h5 {
   font-weight: 600;
   letter-spacing: -0.3px;
 }
 
-/* Text utilities */
 .text-muted {
   color: var(--text-secondary) !important;
+}
+
+/* ========== DETAIL PAGE — info card blob ========== */
+.col-md-8 > .card {
+  border-radius: 45% 55% 50% 50% / 60% 40% 60% 40%;
+}
+
+.col-md-4 > .card {
+  border-radius: 55% 45% 40% 60% / 45% 55% 50% 50%;
+}
+
+/* btn-group inside task detail — keep buttons more regular */
+.d-flex.gap-2 .btn {
+  border-radius: 55% 45% 50% 50% / 60% 60% 40% 40%;
 }
