@@ -1,19 +1,19 @@
 <%= link_to board_task_path(board, task), class: "text-decoration-none" do %>
   <div class="task-card">
     <div class="d-flex justify-content-between align-items-start mb-1">
-      <span class="fw-semibold small" style="color: var(--text-primary);"><%= task.title %></span>
+      <span class="fw-medium" style="font-size: 0.85rem; color: var(--text-dark); position: relative; z-index: 1;"><%= task.title %></span>
       <% priority_colors = { "low" => "success", "medium" => "info", "high" => "warning", "urgent" => "danger" } %>
-      <span class="badge bg-<%= priority_colors[task.priority] %> ms-2"><%= task.priority.upcase %></span>
+      <span class="badge bg-<%= priority_colors[task.priority] %> ms-2" style="position: relative; z-index: 1;"><%= task.priority %></span>
     </div>
     <% if task.due_date %>
-      <small class="<%= task.due_date < Date.current ? 'text-danger' : 'text-muted' %>" style="font-size: 0.75rem;">
+      <small class="<%= task.due_date < Date.current ? 'text-danger' : 'text-muted' %>" style="font-size: 0.72rem; position: relative; z-index: 1;">
         Due <%= task.due_date.strftime("%b %d") %>
       </small>
     <% end %>
     <% if task.assignees.any? %>
-      <div class="mt-2 d-flex gap-1 flex-wrap">
+      <div class="mt-2 d-flex gap-1 flex-wrap" style="position: relative; z-index: 1;">
         <% task.assignees.each do |assignee| %>
-          <span class="badge bg-secondary" style="font-size: 0.65rem;"><%= assignee.name.split.map(&:first).join %></span>
+          <span class="badge bg-secondary" style="font-size: 0.6rem;"><%= assignee.name.split.map(&:first).join %></span>
         <% end %>
       </div>
     <% end %>

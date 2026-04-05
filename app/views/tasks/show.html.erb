@@ -1,7 +1,7 @@
 <div class="row g-4">
   <div class="col-md-8">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h1 class="mb-0"><%= @task.title %></h1>
+      <h1 style="font-size: 2rem;"><%= @task.title %></h1>
       <div class="d-flex gap-2">
         <%= link_to "Edit", edit_board_task_path(@board, @task), class: "btn btn-outline-secondary btn-sm" %>
         <%= button_to "Delete", board_task_path(@board, @task), method: :delete,
@@ -12,32 +12,28 @@
 
     <% if @task.description.present? %>
       <div class="card mb-4">
-        <div class="card-body">
-          <h6 class="text-muted text-uppercase small mb-3">Description</h6>
-          <p class="mb-0" style="line-height: 1.7;"><%= simple_format(@task.description) %></p>
-        </div>
+        <h5 class="mb-3">Description</h5>
+        <p class="mb-0" style="font-size: 0.9rem; line-height: 1.7; color: var(--text-mid);"><%= simple_format(@task.description) %></p>
       </div>
     <% end %>
 
     <div class="card mb-4">
-      <div class="card-body">
-        <div class="row text-center">
-          <div class="col-md-4">
-            <small class="text-muted text-uppercase d-block mb-1">Status</small>
-            <% status_colors = { "todo" => "secondary", "in_progress" => "info", "in_review" => "warning", "done" => "success" } %>
-            <span class="badge bg-<%= status_colors[@task.status] %>"><%= @task.status.titleize %></span>
-          </div>
-          <div class="col-md-4">
-            <small class="text-muted text-uppercase d-block mb-1">Priority</small>
-            <% priority_colors = { "low" => "success", "medium" => "info", "high" => "warning", "urgent" => "danger" } %>
-            <span class="badge bg-<%= priority_colors[@task.priority] %>"><%= @task.priority.upcase %></span>
-          </div>
-          <div class="col-md-4">
-            <small class="text-muted text-uppercase d-block mb-1">Due Date</small>
-            <span class="<%= @task.due_date && @task.due_date < Date.current ? 'text-danger' : '' %>">
-              <%= @task.due_date&.strftime("%B %d, %Y") || "Not set" %>
-            </span>
-          </div>
+      <div class="row text-center">
+        <div class="col-md-4">
+          <h5>Status</h5>
+          <% status_colors = { "todo" => "secondary", "in_progress" => "info", "in_review" => "warning", "done" => "success" } %>
+          <span class="badge bg-<%= status_colors[@task.status] %>"><%= @task.status.titleize %></span>
+        </div>
+        <div class="col-md-4">
+          <h5>Priority</h5>
+          <% priority_colors = { "low" => "success", "medium" => "info", "high" => "warning", "urgent" => "danger" } %>
+          <span class="badge bg-<%= priority_colors[@task.priority] %>"><%= @task.priority %></span>
+        </div>
+        <div class="col-md-4">
+          <h5>Due Date</h5>
+          <span style="font-size: 0.9rem;" class="<%= @task.due_date && @task.due_date < Date.current ? 'text-danger' : 'text-muted' %>">
+            <%= @task.due_date&.strftime("%B %d, %Y") || "Not set" %>
+          </span>
         </div>
       </div>
     </div>
@@ -57,18 +53,18 @@
   <div class="col-md-4">
     <div class="card">
       <div class="card-header">
-        <strong>Assignees</strong>
+        <h5 class="mb-0">Assignees</h5>
       </div>
       <ul class="list-group list-group-flush">
         <% @task.assignments.includes(:user).each do |assignment| %>
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            <span><%= assignment.user.name %></span>
+            <span style="font-size: 0.9rem;"><%= assignment.user.name %></span>
             <%= button_to "Remove", board_task_assignment_path(@board, @task, assignment),
                   method: :delete, class: "btn btn-outline-danger btn-sm" %>
           </li>
         <% end %>
         <% if @task.assignees.empty? %>
-          <li class="list-group-item text-muted">No assignees</li>
+          <li class="list-group-item text-muted" style="font-size: 0.85rem;">No assignees</li>
         <% end %>
       </ul>
       <div class="card-body">

@@ -3,96 +3,118 @@
  *= require_self
  */
 
+/* ========== MIRROR THEME — Warm light, chrome sheen ========== */
+
 :root {
-  --bg-primary: #0d1117;
-  --bg-secondary: #161b22;
-  --bg-tertiary: #1c2128;
-  --bg-card: #1c2128;
-  --border-color: #30363d;
-  --border-highlight: rgba(255, 255, 255, 0.08);
-  --text-primary: #e6edf3;
-  --text-secondary: #8b949e;
-  --accent-blue: #58a6ff;
-  --accent-green: #3fb950;
-  --accent-purple: #bc8cff;
-  --accent-orange: #d29922;
-  --accent-red: #f85149;
+  --bg: #f4f1ec;
+  --bg-warm: #eae5dd;
+  --bg-glass: rgba(255, 255, 255, 0.55);
+  --bg-glass-hover: rgba(255, 255, 255, 0.75);
+  --border-mirror: rgba(180, 170, 155, 0.4);
+  --border-chrome: rgba(200, 195, 185, 0.7);
+  --border-shine: rgba(255, 255, 255, 0.9);
+  --text-dark: #2c2824;
+  --text-mid: #6b6358;
+  --text-soft: #9a9084;
+  --accent: #8b7355;
+  --accent-warm: #a08060;
+  --chrome-light: rgba(255, 255, 255, 0.95);
+  --chrome-mid: rgba(220, 215, 205, 0.6);
+  --shadow-soft: rgba(120, 110, 95, 0.1);
+  --shadow-deep: rgba(80, 70, 55, 0.15);
 }
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: var(--bg-primary);
-  /* Subtle noise texture via SVG data URI */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  color: var(--text-primary);
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(255,250,240,0.8) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(230,220,205,0.5) 0%, transparent 50%);
+  color: var(--text-dark);
   -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
 }
 
-/* ========== MIRROR-SHAPED CARDS ========== */
+/* ========== TYPOGRAPHY ========== */
+h1, h2, h3 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--text-dark);
+}
 
+h4, h5, h6 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: var(--text-mid);
+}
+
+/* ========== MIRROR CARDS ========== */
 .card {
-  background: var(--bg-card);
-  border: 2px solid var(--border-color);
-  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-  transition: border-color 0.3s ease, transform 0.25s ease, box-shadow 0.3s ease;
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-mirror);
+  border-radius: 32% 68% 62% 38% / 36% 32% 68% 64%;
   position: relative;
   overflow: visible;
-  padding: 1.5rem 1.75rem;
-  /* Layered depth — double border effect */
+  padding: 2rem 1.75rem;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease, border-color 0.3s ease;
   box-shadow:
-    0 0 0 1px var(--border-highlight),
-    0 4px 20px rgba(0, 0, 0, 0.3);
+    0 1px 0 var(--border-shine) inset,
+    0 8px 32px var(--shadow-soft),
+    0 2px 8px var(--shadow-soft);
 }
 
-/* Glossy sheen band */
+/* Chrome sheen — diagonal light band */
 .card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   border-radius: inherit;
   background: linear-gradient(
-    145deg,
+    135deg,
     transparent 0%,
-    transparent 30%,
-    rgba(255, 255, 255, 0.04) 38%,
-    rgba(255, 255, 255, 0.09) 42%,
-    rgba(255, 255, 255, 0.04) 46%,
-    transparent 55%,
+    transparent 25%,
+    rgba(255, 255, 255, 0.15) 35%,
+    rgba(255, 255, 255, 0.5) 40%,
+    rgba(255, 255, 255, 0.7) 42%,
+    rgba(255, 255, 255, 0.5) 44%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 60%,
     transparent 100%
   );
   pointer-events: none;
   z-index: 1;
+  opacity: 0.5;
   transition: opacity 0.4s ease;
 }
 
-/* Inner glow ring for depth */
+/* Inner chrome lip — mirror frame effect */
 .card::after {
   content: '';
   position: absolute;
-  top: 4px;
-  left: 4px;
-  right: 4px;
-  bottom: 4px;
+  top: 5px; left: 5px; right: 5px; bottom: 5px;
   border-radius: inherit;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   pointer-events: none;
   z-index: 1;
 }
 
 .card:hover {
-  border-color: rgba(188, 140, 255, 0.35);
-  transform: translateY(-3px) scale(1.01);
+  transform: translateY(-4px) scale(1.015);
+  border-color: rgba(180, 170, 155, 0.6);
   box-shadow:
-    0 0 0 1px rgba(188, 140, 255, 0.15),
-    0 8px 30px rgba(0, 0, 0, 0.5),
-    0 0 40px rgba(88, 166, 255, 0.04);
+    0 1px 0 var(--border-shine) inset,
+    0 16px 48px var(--shadow-deep),
+    0 4px 16px var(--shadow-soft);
 }
 
 .card:hover::before {
-  opacity: 1.3;
+  opacity: 0.75;
 }
 
 .card > * {
@@ -102,230 +124,273 @@ body {
 
 .card-header {
   background: transparent !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  margin: -1.5rem -1.75rem 1rem -1.75rem;
-  padding: 1rem 1.75rem;
+  border-bottom: 1px solid rgba(180, 170, 155, 0.2);
+  margin: -2rem -1.75rem 1.25rem -1.75rem;
+  padding: 1.25rem 1.75rem;
 }
 
 .card-footer {
   background: transparent !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  margin: 1rem -1.75rem -1.5rem -1.75rem;
-  padding: 0.75rem 1.75rem;
+  border-top: 1px solid rgba(180, 170, 155, 0.2);
+  margin: 1.25rem -1.75rem -2rem -1.75rem;
+  padding: 0.85rem 1.75rem;
 }
 
-.card-body {
-  padding: 0;
-}
+.card-body { padding: 0; }
 
-/* Board cards — unique mirror shapes */
-.col-md-4:nth-child(1) .card { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-.col-md-4:nth-child(2) .card { border-radius: 70% 30% 30% 70% / 60% 40% 60% 40%; }
-.col-md-4:nth-child(3) .card { border-radius: 40% 60% 50% 50% / 70% 30% 70% 30%; }
-.col-md-4:nth-child(4) .card { border-radius: 60% 40% 70% 30% / 40% 60% 30% 70%; }
-.col-md-4:nth-child(5) .card { border-radius: 50% 50% 30% 70% / 50% 70% 30% 50%; }
-.col-md-4:nth-child(6) .card { border-radius: 35% 65% 60% 40% / 45% 55% 45% 55%; }
+/* Unique mirror shapes per board card */
+.col-md-4:nth-child(1) .card { border-radius: 32% 68% 62% 38% / 36% 32% 68% 64%; }
+.col-md-4:nth-child(2) .card { border-radius: 68% 32% 38% 62% / 58% 42% 58% 42%; }
+.col-md-4:nth-child(3) .card { border-radius: 42% 58% 52% 48% / 66% 34% 66% 34%; }
+.col-md-4:nth-child(4) .card { border-radius: 58% 42% 65% 35% / 38% 62% 38% 62%; }
+.col-md-4:nth-child(5) .card { border-radius: 48% 52% 35% 65% / 52% 68% 32% 48%; }
+.col-md-4:nth-child(6) .card { border-radius: 36% 64% 58% 42% / 44% 56% 44% 56%; }
 
 /* ========== KANBAN COLUMNS ========== */
 .kanban-column {
-  background: var(--bg-secondary);
-  border: 2px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border-mirror);
   min-height: 300px;
   overflow: hidden;
   padding: 0 !important;
   box-shadow:
-    0 0 0 1px var(--border-highlight),
-    0 6px 24px rgba(0, 0, 0, 0.35);
+    0 1px 0 rgba(255,255,255,0.7) inset,
+    0 6px 24px var(--shadow-soft);
 }
 
-/* Softer blob for columns — more usable */
-.col-md-3:nth-child(1) .kanban-column { border-radius: 20px 40px 40px 20px; }
-.col-md-3:nth-child(2) .kanban-column { border-radius: 40px 20px 20px 40px; }
-.col-md-3:nth-child(3) .kanban-column { border-radius: 25px 35px 30px 30px; }
-.col-md-3:nth-child(4) .kanban-column { border-radius: 35px 25px 25px 35px; }
+.col-md-3:nth-child(1) .kanban-column { border-radius: 28px 44px 40px 24px; }
+.col-md-3:nth-child(2) .kanban-column { border-radius: 44px 28px 24px 40px; }
+.col-md-3:nth-child(3) .kanban-column { border-radius: 32px 38px 34px 36px; }
+.col-md-3:nth-child(4) .kanban-column { border-radius: 38px 30px 28px 42px; }
+
+/* Sheen on columns */
+.kanban-column::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 50%;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.05) 60%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.kanban-column::after { display: none; }
 
 .kanban-column .card-header {
-  border-radius: 0;
-  padding: 1rem 1.25rem;
   margin: 0;
-  background: rgba(255, 255, 255, 0.02) !important;
-  border-bottom: 1px solid var(--border-color);
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-bottom: 1px solid rgba(180, 170, 155, 0.2);
+  position: relative;
+  z-index: 1;
 }
 
 .kanban-column .card-body {
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
   max-height: 600px;
   overflow-y: auto;
+  position: relative;
+  z-index: 1;
 }
 
 .kanban-column:hover {
   transform: none;
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(180, 170, 155, 0.55);
 }
 
-.kanban-column::after {
-  display: none;
-}
-
-/* ========== TASK CARDS (inside kanban) ========== */
+/* ========== TASK CARDS ========== */
 .task-card {
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(180, 170, 155, 0.3);
   padding: 0.85rem 1rem;
   margin-bottom: 0.6rem;
-  transition: border-color 0.2s ease, box-shadow 0.3s ease, transform 0.2s ease;
   position: relative;
   overflow: hidden;
-  /* Softer mirror shape for readability */
-  border-radius: 18px 28px 24px 20px;
-  /* Layered border */
+  transition: transform 0.25s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   box-shadow:
-    0 0 0 1px var(--border-highlight),
-    0 2px 8px rgba(0, 0, 0, 0.2);
+    0 1px 0 rgba(255,255,255,0.6) inset,
+    0 2px 8px rgba(120, 110, 95, 0.08);
 }
 
-/* Sheen on task cards */
+.task-card:nth-child(odd)  { border-radius: 20px 30px 26px 22px; }
+.task-card:nth-child(even) { border-radius: 28px 20px 24px 30px; }
+
+/* Mini sheen on task cards */
 .task-card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0;
+  height: 55%;
   border-radius: inherit;
   background: linear-gradient(
-    130deg,
-    transparent 0%,
-    transparent 40%,
-    rgba(255, 255, 255, 0.04) 46%,
-    rgba(255, 255, 255, 0.07) 50%,
-    rgba(255, 255, 255, 0.04) 54%,
-    transparent 60%,
-    transparent 100%
+    180deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0) 100%
   );
   pointer-events: none;
-  transition: opacity 0.3s ease;
 }
 
 .task-card:hover {
-  border-color: var(--accent-purple);
+  border-color: var(--accent-warm);
+  transform: translateY(-2px);
   box-shadow:
-    0 0 0 1px rgba(188, 140, 255, 0.15),
-    0 4px 16px rgba(0, 0, 0, 0.35);
-  transform: translateY(-1px);
+    0 1px 0 rgba(255,255,255,0.6) inset,
+    0 6px 20px rgba(120, 110, 95, 0.15);
 }
 
-/* Alternate task card shapes */
-.task-card:nth-child(odd)  { border-radius: 18px 28px 24px 20px; }
-.task-card:nth-child(even) { border-radius: 26px 18px 22px 28px; }
+.task-card a {
+  color: var(--text-dark);
+}
 
 /* ========== NAVBAR ========== */
 .navbar {
-  background: var(--bg-secondary) !important;
-  border-bottom: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.6) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(180, 170, 155, 0.25);
   padding: 0.75rem 0;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 12px rgba(120, 110, 95, 0.08);
 }
 
 .navbar-brand {
-  font-weight: 700;
-  font-size: 1.25rem;
-  letter-spacing: -0.5px;
-  color: var(--text-primary) !important;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.4rem;
+  letter-spacing: -0.02em;
+  color: var(--text-dark) !important;
 }
 
-/* ========== BUTTONS — organic pill shapes ========== */
-.btn {
-  border-radius: 18px 24px 20px 22px;
-  padding: 0.5rem 1.4rem;
+.nav-link {
+  color: var(--text-mid) !important;
+  font-size: 0.85rem;
   font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.nav-link:hover {
+  color: var(--text-dark) !important;
+}
+
+/* ========== BUTTONS — polished chrome pills ========== */
+.btn {
+  border-radius: 20px 26px 22px 24px;
+  padding: 0.55rem 1.5rem;
+  font-weight: 500;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
   position: relative;
   overflow: hidden;
-  transition: all 0.25s ease;
-  border-width: 2px;
+  transition: all 0.3s ease;
+  border-width: 1px;
 }
 
-/* Top gloss on buttons */
+/* Chrome gloss on buttons */
 .btn::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 10%;
-  width: 80%;
-  height: 45%;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.15) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  top: 0; left: 15%; width: 70%; height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.35) 0%, transparent 100%);
   pointer-events: none;
   border-radius: 0 0 50% 50%;
 }
 
 .btn-primary {
-  background: var(--accent-blue);
-  border-color: var(--accent-blue);
-  box-shadow: 0 2px 10px rgba(88, 166, 255, 0.2);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(139, 115, 85, 0.25);
 }
 
 .btn-primary:hover {
-  background: #4c8fdb;
-  border-color: #4c8fdb;
+  background: var(--accent-warm);
+  border-color: var(--accent-warm);
   transform: scale(1.04);
-  box-shadow: 0 4px 16px rgba(88, 166, 255, 0.3);
+  box-shadow: 0 4px 16px rgba(139, 115, 85, 0.3);
 }
 
 .btn-success {
-  background: var(--accent-green);
-  border-color: var(--accent-green);
-  box-shadow: 0 2px 10px rgba(63, 185, 80, 0.2);
+  background: #7a9a6d;
+  border-color: #7a9a6d;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(122, 154, 109, 0.25);
 }
 
 .btn-outline-secondary {
-  border-color: var(--border-color);
-  color: var(--text-secondary);
+  border-color: var(--border-chrome);
+  color: var(--text-mid);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .btn-outline-secondary:hover {
-  background: var(--bg-tertiary);
-  border-color: var(--text-secondary);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.7);
+  border-color: var(--border-mirror);
+  color: var(--text-dark);
   transform: scale(1.04);
 }
 
 .btn-outline-danger {
-  /* inherits blob shape */
+  border-color: rgba(200, 100, 90, 0.4);
+  color: #b85450;
+}
+
+.btn-outline-danger:hover {
+  background: rgba(200, 100, 90, 0.08);
+  border-color: #b85450;
 }
 
 .btn-outline-primary {
-  border-color: var(--accent-blue);
-  color: var(--accent-blue);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-outline-primary:hover {
+  background: var(--accent);
+  color: #fff;
 }
 
 .btn-sm {
   padding: 0.35rem 1rem;
-  border-radius: 14px 20px 16px 18px;
+  font-size: 0.8rem;
+  border-radius: 16px 22px 18px 20px;
 }
 
-/* ========== FORMS ========== */
+/* ========== FORMS — frosted inputs ========== */
 .form-control,
 .form-select {
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(180, 170, 155, 0.35);
+  color: var(--text-dark);
   border-radius: 16px;
-  padding: 0.65rem 1rem;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-control:focus,
 .form-select:focus {
-  background: var(--bg-tertiary);
-  border-color: var(--accent-blue);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.7);
+  border-color: var(--accent);
+  color: var(--text-dark);
   box-shadow:
-    inset 0 1px 3px rgba(0, 0, 0, 0.2),
-    0 0 0 3px rgba(88, 166, 255, 0.15);
+    0 1px 0 rgba(255,255,255,0.5) inset,
+    0 0 0 3px rgba(139, 115, 85, 0.1);
+}
+
+.form-control::placeholder {
+  color: var(--text-soft);
 }
 
 textarea.form-control {
@@ -333,163 +398,185 @@ textarea.form-control {
 }
 
 .form-label {
-  font-weight: 500;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  color: var(--text-soft);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.1em;
   margin-bottom: 0.4rem;
 }
 
 .form-check-input {
-  background-color: var(--bg-tertiary);
-  border-color: var(--border-color);
+  background-color: rgba(255, 255, 255, 0.5);
+  border-color: var(--border-mirror);
   border-radius: 50%;
 }
 
 .form-check-input:checked {
-  background-color: var(--accent-blue);
-  border-color: var(--accent-blue);
+  background-color: var(--accent);
+  border-color: var(--accent);
 }
 
-/* ========== BADGES — soft blobs ========== */
+.form-check-label {
+  font-size: 0.9rem;
+  color: var(--text-mid);
+}
+
+/* ========== BADGES ========== */
 .badge {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 600;
-  letter-spacing: 0.3px;
-  border-radius: 12px 16px 14px 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 14px 18px 16px 16px;
   padding: 0.4em 0.8em;
 }
 
 .badge.bg-secondary {
-  background: var(--bg-tertiary) !important;
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
+  background: rgba(180, 170, 155, 0.15) !important;
+  border: 1px solid rgba(180, 170, 155, 0.3);
+  color: var(--text-mid);
 }
 
-/* Priority badges */
-.badge.bg-success { background: rgba(63, 185, 80, 0.15) !important; color: var(--accent-green); border: 1px solid rgba(63, 185, 80, 0.3); }
-.badge.bg-info { background: rgba(88, 166, 255, 0.15) !important; color: var(--accent-blue); border: 1px solid rgba(88, 166, 255, 0.3); }
-.badge.bg-warning { background: rgba(210, 153, 34, 0.15) !important; color: var(--accent-orange); border: 1px solid rgba(210, 153, 34, 0.3); }
-.badge.bg-danger { background: rgba(248, 81, 73, 0.15) !important; color: var(--accent-red); border: 1px solid rgba(248, 81, 73, 0.3); }
+/* Priority badges — warm muted tones */
+.badge.bg-success {
+  background: rgba(122, 154, 109, 0.12) !important;
+  color: #5e7d52;
+  border: 1px solid rgba(122, 154, 109, 0.3);
+}
+.badge.bg-info {
+  background: rgba(100, 140, 180, 0.12) !important;
+  color: #4a7a9b;
+  border: 1px solid rgba(100, 140, 180, 0.3);
+}
+.badge.bg-warning {
+  background: rgba(190, 160, 90, 0.12) !important;
+  color: #9a8040;
+  border: 1px solid rgba(190, 160, 90, 0.3);
+}
+.badge.bg-danger {
+  background: rgba(185, 100, 90, 0.1) !important;
+  color: #a85550;
+  border: 1px solid rgba(185, 100, 90, 0.25);
+}
 
 /* ========== ALERTS ========== */
 .alert {
-  border-radius: 20px 30px 26px 24px;
-  border: 1px solid var(--border-color);
+  border-radius: 22px 30px 26px 24px;
+  border: 1px solid rgba(180, 170, 155, 0.3);
   padding: 1rem 1.5rem;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 .alert-success {
-  background: rgba(63, 185, 80, 0.1);
-  border-color: rgba(63, 185, 80, 0.3);
-  color: var(--accent-green);
+  background: rgba(122, 154, 109, 0.1);
+  border-color: rgba(122, 154, 109, 0.3);
+  color: #5e7d52;
 }
 
 .alert-danger {
-  background: rgba(248, 81, 73, 0.1);
-  border-color: rgba(248, 81, 73, 0.3);
-  color: var(--accent-red);
+  background: rgba(185, 100, 90, 0.08);
+  border-color: rgba(185, 100, 90, 0.25);
+  color: #a85550;
 }
 
 /* ========== LINKS ========== */
 a {
-  color: var(--accent-blue);
+  color: var(--accent);
   text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 a:hover {
-  color: #79b8ff;
+  color: var(--accent-warm);
 }
 
 /* ========== LIST GROUP ========== */
 .list-group-item {
-  background: var(--bg-tertiary);
-  border-color: var(--border-color);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(180, 170, 155, 0.2);
+  color: var(--text-dark);
 }
 
-/* ========== AUTH PAGE — elegant mirror card ========== */
+/* ========== AUTH MIRROR CARD ========== */
 .auth-mirror {
-  border-radius: 32% 68% 62% 38% / 38% 62% 38% 62%;
-  padding: 2.5rem 2rem;
+  border-radius: 34% 66% 60% 40% / 38% 34% 66% 62%;
+  padding: 2.75rem 2.25rem;
+  background: rgba(255, 255, 255, 0.5);
   box-shadow:
-    0 0 0 1px var(--border-highlight),
-    0 0 0 4px rgba(88, 166, 255, 0.03),
-    0 0 0 5px var(--border-color),
-    0 12px 40px rgba(0, 0, 0, 0.5);
+    0 1px 0 rgba(255,255,255,0.8) inset,
+    0 0 0 4px rgba(255, 255, 255, 0.3),
+    0 0 0 5px rgba(180, 170, 155, 0.2),
+    0 16px 48px rgba(120, 110, 95, 0.15);
 }
 
+/* Stronger sheen on auth card */
 .auth-mirror::before {
   background: linear-gradient(
-    150deg,
+    140deg,
     transparent 0%,
-    transparent 28%,
-    rgba(255, 255, 255, 0.03) 35%,
-    rgba(255, 255, 255, 0.1) 42%,
-    rgba(255, 255, 255, 0.03) 49%,
-    transparent 56%,
+    transparent 22%,
+    rgba(255, 255, 255, 0.2) 30%,
+    rgba(255, 255, 255, 0.6) 36%,
+    rgba(255, 255, 255, 0.8) 38%,
+    rgba(255, 255, 255, 0.6) 40%,
+    rgba(255, 255, 255, 0.2) 46%,
+    transparent 55%,
     transparent 100%
   );
-}
-
-/* Triple-ring border effect on auth card */
-.auth-mirror::after {
-  top: 6px;
-  left: 6px;
-  right: 6px;
-  bottom: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  opacity: 0.6;
 }
 
 /* ========== DETAIL PAGE ========== */
 .col-md-8 > .card {
-  border-radius: 24px 36px 30px 28px;
+  border-radius: 26px 38px 32px 30px;
+  padding: 2rem;
 }
 
 .col-md-4 > .card {
-  border-radius: 30px 24px 28px 34px;
+  border-radius: 32px 26px 30px 36px;
   padding: 0;
   overflow: hidden;
 }
 
 .col-md-4 > .card .card-header {
   margin: 0;
-  padding: 1rem 1.25rem;
+  padding: 1.25rem 1.5rem;
 }
 
 .col-md-4 > .card .card-body {
-  padding: 1rem 1.25rem;
+  padding: 1rem 1.5rem;
 }
 
 .col-md-4 > .card .list-group-item {
-  padding: 0.75rem 1.25rem;
+  padding: 0.75rem 1.5rem;
 }
+
+/* ========== STATUS COLORS (for board show) ========== */
+.status-todo    { color: var(--text-soft); }
+.status-progress { color: #4a7a9b; }
+.status-review  { color: #9a8040; }
+.status-done    { color: #5e7d52; }
 
 /* ========== SCROLLBAR ========== */
-::-webkit-scrollbar {
-  width: 6px;
-}
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(180, 170, 155, 0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(180, 170, 155, 0.5); }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
-}
-
-/* ========== TYPOGRAPHY ========== */
-h1, h2, h3, h4, h5 {
-  font-weight: 600;
-  letter-spacing: -0.3px;
-}
-
+/* ========== TEXT ========== */
 .text-muted {
-  color: var(--text-secondary) !important;
+  color: var(--text-soft) !important;
+}
+
+/* ========== MOBILE ========== */
+@media (max-width: 768px) {
+  .card {
+    padding: 1.5rem 1.25rem;
+  }
+  .auth-mirror {
+    padding: 2rem 1.5rem;
+  }
 }
