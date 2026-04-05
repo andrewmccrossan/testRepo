@@ -29,7 +29,8 @@ body {
   background: var(--bg);
   background-image:
     radial-gradient(ellipse at 20% 0%, rgba(255,250,240,0.8) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, rgba(230,220,205,0.5) 0%, transparent 50%);
+    radial-gradient(ellipse at 80% 100%, rgba(230,220,205,0.5) 0%, transparent 50%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.018'/%3E%3C/svg%3E");
   color: var(--text-dark);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
@@ -364,29 +365,37 @@ h4, h5, h6 {
   border-radius: 16px 22px 18px 20px;
 }
 
-/* ========== FORMS — frosted inputs ========== */
+/* ========== FORMS — mirror-shaped frosted inputs ========== */
 .form-control,
 .form-select {
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  border: 1px solid rgba(180, 170, 155, 0.35);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(180, 170, 155, 0.3);
   color: var(--text-dark);
-  border-radius: 16px;
-  padding: 0.7rem 1rem;
+  border-radius: 24px 32px 28px 26px;
+  padding: 0.75rem 1.2rem;
   font-size: 0.9rem;
-  box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 -1px 3px rgba(120, 110, 95, 0.06) inset,
+    0 2px 6px rgba(120, 110, 95, 0.06);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
 }
 
 .form-control:focus,
 .form-select:focus {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.65);
   border-color: var(--accent);
   color: var(--text-dark);
+  transform: scale(1.01);
   box-shadow:
-    0 1px 0 rgba(255,255,255,0.5) inset,
-    0 0 0 3px rgba(139, 115, 85, 0.1);
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 -1px 3px rgba(120, 110, 95, 0.04) inset,
+    0 0 0 3px rgba(139, 115, 85, 0.08),
+    0 4px 12px rgba(120, 110, 95, 0.1);
 }
 
 .form-control::placeholder {
@@ -394,7 +403,17 @@ h4, h5, h6 {
 }
 
 textarea.form-control {
-  border-radius: 20px;
+  border-radius: 26px 34px 30px 28px;
+}
+
+/* Alternate input shapes for organic feel */
+.mb-3:nth-child(odd) .form-control,
+.mb-3:nth-child(odd) .form-select {
+  border-radius: 24px 32px 28px 26px;
+}
+.mb-3:nth-child(even) .form-control,
+.mb-3:nth-child(even) .form-select {
+  border-radius: 30px 24px 26px 32px;
 }
 
 .form-label {
@@ -502,31 +521,97 @@ a:hover {
 
 /* ========== AUTH MIRROR CARD ========== */
 .auth-mirror {
-  border-radius: 34% 66% 60% 40% / 38% 34% 66% 62%;
-  padding: 2.75rem 2.25rem;
-  background: rgba(255, 255, 255, 0.5);
+  border-radius: 36% 64% 58% 42% / 40% 36% 64% 60%;
+  padding: 3rem 2.5rem 2.5rem 2.5rem;
+  background:
+    linear-gradient(
+      165deg,
+      rgba(255, 255, 255, 0.65) 0%,
+      rgba(255, 255, 255, 0.4) 30%,
+      rgba(245, 240, 232, 0.45) 60%,
+      rgba(255, 255, 255, 0.5) 100%
+    );
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   box-shadow:
-    0 1px 0 rgba(255,255,255,0.8) inset,
-    0 0 0 4px rgba(255, 255, 255, 0.3),
-    0 0 0 5px rgba(180, 170, 155, 0.2),
-    0 16px 48px rgba(120, 110, 95, 0.15);
+    /* top edge highlight */
+    0 1px 0 rgba(255,255,255,0.9) inset,
+    /* left edge highlight */
+    1px 0 0 rgba(255,255,255,0.5) inset,
+    /* bottom inner shadow for depth */
+    0 -2px 6px rgba(180, 170, 155, 0.08) inset,
+    /* frame ring 1 */
+    0 0 0 3px rgba(255, 255, 255, 0.4),
+    /* frame ring 2 */
+    0 0 0 4px rgba(180, 170, 155, 0.15),
+    /* frame ring 3 — outer chrome */
+    0 0 0 7px rgba(255, 255, 255, 0.2),
+    0 0 0 8px rgba(180, 170, 155, 0.1),
+    /* drop shadow */
+    0 20px 60px rgba(120, 110, 95, 0.18),
+    0 8px 24px rgba(120, 110, 95, 0.1);
 }
 
-/* Stronger sheen on auth card */
+/* Primary sheen — bright diagonal band */
 .auth-mirror::before {
   background: linear-gradient(
     140deg,
     transparent 0%,
-    transparent 22%,
-    rgba(255, 255, 255, 0.2) 30%,
-    rgba(255, 255, 255, 0.6) 36%,
-    rgba(255, 255, 255, 0.8) 38%,
-    rgba(255, 255, 255, 0.6) 40%,
-    rgba(255, 255, 255, 0.2) 46%,
-    transparent 55%,
+    transparent 18%,
+    rgba(255, 255, 255, 0.08) 24%,
+    rgba(255, 255, 255, 0.25) 30%,
+    rgba(255, 255, 255, 0.55) 35%,
+    rgba(255, 255, 255, 0.75) 37%,
+    rgba(255, 255, 255, 0.55) 39%,
+    rgba(255, 255, 255, 0.25) 44%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 58%,
+    /* secondary faint sheen lower */
+    transparent 70%,
+    rgba(255, 255, 255, 0.04) 76%,
+    rgba(255, 255, 255, 0.1) 80%,
+    rgba(255, 255, 255, 0.04) 84%,
+    transparent 90%,
     transparent 100%
   );
-  opacity: 0.6;
+  opacity: 0.7;
+}
+
+/* Inner chrome lip with subtle texture */
+.auth-mirror::after {
+  top: 8px; left: 8px; right: 8px; bottom: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset;
+}
+
+/* Inputs inside auth card follow the mirror curvature */
+.auth-mirror .form-control,
+.auth-mirror .form-select {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(180, 170, 155, 0.25);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 -1px 4px rgba(120, 110, 95, 0.05) inset,
+    0 2px 8px rgba(120, 110, 95, 0.04);
+}
+
+.auth-mirror .form-control:focus,
+.auth-mirror .form-select:focus {
+  background: rgba(255, 255, 255, 0.55);
+  border-color: var(--accent);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 0 0 3px rgba(139, 115, 85, 0.08),
+    0 4px 12px rgba(120, 110, 95, 0.08);
+}
+
+/* Button inside auth card */
+.auth-mirror .btn-primary {
+  border-radius: 28px 34px 30px 32px;
+  padding: 0.7rem 1.5rem;
+  box-shadow:
+    0 2px 8px rgba(139, 115, 85, 0.2),
+    0 1px 0 rgba(255,255,255,0.2) inset;
 }
 
 /* ========== DETAIL PAGE ========== */
