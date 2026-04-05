@@ -3,34 +3,31 @@
  *= require_self
  */
 
-/* ========== MIRROR THEME — Warm light, chrome sheen ========== */
+/* ========== MIRROR THEME — Wavy concave gold-framed mirrors ========== */
 
 :root {
-  --bg: #f4f1ec;
-  --bg-warm: #eae5dd;
-  --bg-glass: rgba(255, 255, 255, 0.55);
-  --bg-glass-hover: rgba(255, 255, 255, 0.75);
-  --border-mirror: rgba(180, 170, 155, 0.4);
-  --border-chrome: rgba(200, 195, 185, 0.7);
-  --border-shine: rgba(255, 255, 255, 0.9);
+  --bg: #ece7df;
+  --bg-glass: rgba(255, 255, 255, 0.45);
   --text-dark: #2c2824;
   --text-mid: #6b6358;
   --text-soft: #9a9084;
   --accent: #8b7355;
   --accent-warm: #a08060;
-  --chrome-light: rgba(255, 255, 255, 0.95);
-  --chrome-mid: rgba(220, 215, 205, 0.6);
+  --gold: #c9a84c;
+  --gold-light: #ddc06a;
+  --gold-dark: #a8873a;
+  --gold-glow: rgba(201, 168, 76, 0.2);
+  --border-mirror: rgba(180, 170, 155, 0.3);
   --shadow-soft: rgba(120, 110, 95, 0.1);
-  --shadow-deep: rgba(80, 70, 55, 0.15);
+  --shadow-deep: rgba(80, 70, 55, 0.18);
 }
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
   background-image:
-    radial-gradient(ellipse at 20% 0%, rgba(255,250,240,0.8) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, rgba(230,220,205,0.5) 0%, transparent 50%),
-    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.018'/%3E%3C/svg%3E");
+    radial-gradient(ellipse at 30% 10%, rgba(255,250,240,0.6) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 90%, rgba(220,212,198,0.4) 0%, transparent 50%);
   color: var(--text-dark);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
@@ -53,132 +50,168 @@ h4, h5, h6 {
   color: var(--text-mid);
 }
 
-/* ========== MIRROR CARDS ========== */
+/* ========== MIRROR WRAPPER ========== */
+/*
+ * We use an SVG-based approach: each .mirror-wrap contains an inline SVG
+ * that defines the wavy blob outline with concave portions, plus the
+ * gold frame stroke. The content sits on top.
+ *
+ * For cards that can't use the SVG wrapper (kanban, detail), we fall back
+ * to border-radius with gentler curves.
+ */
+
+.mirror-wrap {
+  position: relative;
+  display: block;
+}
+
+.mirror-wrap svg.mirror-shape {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  filter: drop-shadow(0 8px 24px rgba(100, 90, 70, 0.12))
+          drop-shadow(0 2px 8px rgba(100, 90, 70, 0.08));
+}
+
+.mirror-wrap .mirror-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* ========== MIRROR CARDS (fallback with border-radius) ========== */
 .card {
   background: var(--bg-glass);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border-mirror);
-  border-radius: 32% 68% 62% 38% / 36% 32% 68% 64%;
+  border: 3px solid var(--gold);
+  border-radius: 60% 40% 55% 45% / 45% 55% 45% 55%;
   position: relative;
   overflow: visible;
-  padding: 2rem 1.75rem;
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease, border-color 0.3s ease;
+  padding: 2.25rem 2rem;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
   box-shadow:
-    0 1px 0 var(--border-shine) inset,
+    /* inner gold glow */
+    0 0 0 1px var(--gold-light) inset,
+    0 0 0 4px rgba(255,255,255,0.3) inset,
+    /* gold outer glow */
+    0 0 12px var(--gold-glow),
+    0 0 0 1px rgba(201, 168, 76, 0.15),
+    /* depth */
     0 8px 32px var(--shadow-soft),
     0 2px 8px var(--shadow-soft);
 }
 
-/* Chrome sheen — diagonal light band */
+/* Sheen — angled reflective band */
 .card::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   border-radius: inherit;
   background: linear-gradient(
-    135deg,
+    140deg,
     transparent 0%,
-    transparent 25%,
-    rgba(255, 255, 255, 0.15) 35%,
-    rgba(255, 255, 255, 0.5) 40%,
-    rgba(255, 255, 255, 0.7) 42%,
-    rgba(255, 255, 255, 0.5) 44%,
-    rgba(255, 255, 255, 0.15) 50%,
-    transparent 60%,
+    transparent 20%,
+    rgba(255, 255, 255, 0.08) 28%,
+    rgba(255, 255, 255, 0.3) 34%,
+    rgba(255, 255, 255, 0.55) 37%,
+    rgba(255, 255, 255, 0.7) 38.5%,
+    rgba(255, 255, 255, 0.55) 40%,
+    rgba(255, 255, 255, 0.3) 43%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 58%,
+    transparent 72%,
+    rgba(255, 255, 255, 0.03) 78%,
+    rgba(255, 255, 255, 0.08) 82%,
+    rgba(255, 255, 255, 0.03) 86%,
+    transparent 92%,
     transparent 100%
   );
   pointer-events: none;
   z-index: 1;
-  opacity: 0.5;
+  opacity: 0.6;
   transition: opacity 0.4s ease;
 }
 
-/* Inner chrome lip — mirror frame effect */
+/* Inner gold frame line */
 .card::after {
   content: '';
   position: absolute;
-  top: 5px; left: 5px; right: 5px; bottom: 5px;
+  top: 6px; left: 6px; right: 6px; bottom: 6px;
   border-radius: inherit;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(201, 168, 76, 0.25);
   pointer-events: none;
   z-index: 1;
 }
 
 .card:hover {
-  transform: translateY(-4px) scale(1.015);
-  border-color: rgba(180, 170, 155, 0.6);
+  transform: translateY(-4px) scale(1.012);
   box-shadow:
-    0 1px 0 var(--border-shine) inset,
+    0 0 0 1px var(--gold-light) inset,
+    0 0 0 4px rgba(255,255,255,0.3) inset,
+    0 0 20px var(--gold-glow),
+    0 0 0 1px rgba(201, 168, 76, 0.2),
     0 16px 48px var(--shadow-deep),
     0 4px 16px var(--shadow-soft);
 }
 
-.card:hover::before {
-  opacity: 0.75;
-}
+.card:hover::before { opacity: 0.85; }
 
-.card > * {
-  position: relative;
-  z-index: 2;
-}
+.card > * { position: relative; z-index: 2; }
 
 .card-header {
   background: transparent !important;
-  border-bottom: 1px solid rgba(180, 170, 155, 0.2);
-  margin: -2rem -1.75rem 1.25rem -1.75rem;
-  padding: 1.25rem 1.75rem;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.15);
+  margin: -2.25rem -2rem 1.25rem -2rem;
+  padding: 1.25rem 2rem;
 }
 
 .card-footer {
   background: transparent !important;
-  border-top: 1px solid rgba(180, 170, 155, 0.2);
-  margin: 1.25rem -1.75rem -2rem -1.75rem;
-  padding: 0.85rem 1.75rem;
+  border-top: 1px solid rgba(201, 168, 76, 0.15);
+  margin: 1.25rem -2rem -2.25rem -2rem;
+  padding: 0.85rem 2rem;
 }
 
 .card-body { padding: 0; }
 
-/* Unique mirror shapes per board card */
-.col-md-4:nth-child(1) .card { border-radius: 32% 68% 62% 38% / 36% 32% 68% 64%; }
-.col-md-4:nth-child(2) .card { border-radius: 68% 32% 38% 62% / 58% 42% 58% 42%; }
-.col-md-4:nth-child(3) .card { border-radius: 42% 58% 52% 48% / 66% 34% 66% 34%; }
-.col-md-4:nth-child(4) .card { border-radius: 58% 42% 65% 35% / 38% 62% 38% 62%; }
-.col-md-4:nth-child(5) .card { border-radius: 48% 52% 35% 65% / 52% 68% 32% 48%; }
-.col-md-4:nth-child(6) .card { border-radius: 36% 64% 58% 42% / 44% 56% 44% 56%; }
+/* Board cards — each with a wavy concave mirror shape */
+/* Using high-contrast border-radius combos that create concave illusions */
+.col-md-4:nth-child(1) .card { border-radius: 60% 40% 55% 45% / 45% 55% 45% 55%; }
+.col-md-4:nth-child(2) .card { border-radius: 42% 58% 45% 55% / 58% 42% 55% 45%; }
+.col-md-4:nth-child(3) .card { border-radius: 55% 45% 48% 52% / 42% 58% 50% 50%; }
+.col-md-4:nth-child(4) .card { border-radius: 48% 52% 58% 42% / 55% 45% 42% 58%; }
+.col-md-4:nth-child(5) .card { border-radius: 52% 48% 42% 58% / 48% 52% 58% 42%; }
+.col-md-4:nth-child(6) .card { border-radius: 45% 55% 52% 48% / 58% 42% 48% 52%; }
 
 /* ========== KANBAN COLUMNS ========== */
 .kanban-column {
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid var(--border-mirror);
+  border: 2px solid var(--gold);
   min-height: 300px;
   overflow: hidden;
   padding: 0 !important;
   box-shadow:
-    0 1px 0 rgba(255,255,255,0.7) inset,
+    0 0 0 1px rgba(201, 168, 76, 0.1),
+    0 0 8px var(--gold-glow),
     0 6px 24px var(--shadow-soft);
 }
 
-.col-md-3:nth-child(1) .kanban-column { border-radius: 28px 44px 40px 24px; }
-.col-md-3:nth-child(2) .kanban-column { border-radius: 44px 28px 24px 40px; }
-.col-md-3:nth-child(3) .kanban-column { border-radius: 32px 38px 34px 36px; }
-.col-md-3:nth-child(4) .kanban-column { border-radius: 38px 30px 28px 42px; }
+.col-md-3:nth-child(1) .kanban-column { border-radius: 30px 48px 42px 26px; }
+.col-md-3:nth-child(2) .kanban-column { border-radius: 46px 28px 26px 44px; }
+.col-md-3:nth-child(3) .kanban-column { border-radius: 34px 40px 38px 36px; }
+.col-md-3:nth-child(4) .kanban-column { border-radius: 42px 32px 30px 46px; }
 
-/* Sheen on columns */
 .kanban-column::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 50%;
+  height: 45%;
   border-radius: inherit;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.3) 0%,
-    rgba(255, 255, 255, 0.05) 60%,
-    transparent 100%
-  );
+  background: linear-gradient(180deg, rgba(255,255,255,0.25) 0%, transparent 100%);
   pointer-events: none;
   z-index: 0;
 }
@@ -188,8 +221,8 @@ h4, h5, h6 {
 .kanban-column .card-header {
   margin: 0;
   padding: 1rem 1.5rem;
-  background: rgba(255, 255, 255, 0.15) !important;
-  border-bottom: 1px solid rgba(180, 170, 155, 0.2);
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.15);
   position: relative;
   z-index: 1;
 }
@@ -204,63 +237,60 @@ h4, h5, h6 {
 
 .kanban-column:hover {
   transform: none;
-  border-color: rgba(180, 170, 155, 0.55);
+  border-color: var(--gold-light);
 }
 
 /* ========== TASK CARDS ========== */
 .task-card {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  border: 1px solid rgba(180, 170, 155, 0.3);
-  padding: 0.85rem 1rem;
+  border: 1.5px solid var(--gold);
+  padding: 0.85rem 1.1rem;
   margin-bottom: 0.6rem;
   position: relative;
   overflow: hidden;
   transition: transform 0.25s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   box-shadow:
-    0 1px 0 rgba(255,255,255,0.6) inset,
-    0 2px 8px rgba(120, 110, 95, 0.08);
+    0 1px 0 rgba(255,255,255,0.5) inset,
+    0 0 6px rgba(201, 168, 76, 0.08),
+    0 2px 8px rgba(120, 110, 95, 0.06);
 }
 
-.task-card:nth-child(odd)  { border-radius: 20px 30px 26px 22px; }
-.task-card:nth-child(even) { border-radius: 28px 20px 24px 30px; }
+.task-card:nth-child(odd)  { border-radius: 22px 32px 28px 24px; }
+.task-card:nth-child(even) { border-radius: 30px 22px 26px 32px; }
 
-/* Mini sheen on task cards */
 .task-card::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 55%;
+  height: 50%;
   border-radius: inherit;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 100%);
   pointer-events: none;
 }
 
 .task-card:hover {
-  border-color: var(--accent-warm);
+  border-color: var(--gold-light);
   transform: translateY(-2px);
   box-shadow:
-    0 1px 0 rgba(255,255,255,0.6) inset,
-    0 6px 20px rgba(120, 110, 95, 0.15);
+    0 1px 0 rgba(255,255,255,0.5) inset,
+    0 0 12px var(--gold-glow),
+    0 6px 20px rgba(120, 110, 95, 0.12);
 }
 
-.task-card a {
-  color: var(--text-dark);
-}
+.task-card a { color: var(--text-dark); }
 
 /* ========== NAVBAR ========== */
 .navbar {
-  background: rgba(255, 255, 255, 0.6) !important;
+  background: rgba(255, 255, 255, 0.55) !important;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(180, 170, 155, 0.25);
+  border-bottom: 2px solid var(--gold);
   padding: 0.75rem 0;
-  box-shadow: 0 2px 12px rgba(120, 110, 95, 0.08);
+  box-shadow:
+    0 0 8px var(--gold-glow),
+    0 2px 12px rgba(120, 110, 95, 0.08);
 }
 
 .navbar-brand {
@@ -278,13 +308,11 @@ h4, h5, h6 {
   letter-spacing: 0.03em;
 }
 
-.nav-link:hover {
-  color: var(--text-dark) !important;
-}
+.nav-link:hover { color: var(--text-dark) !important; }
 
-/* ========== BUTTONS — polished chrome pills ========== */
+/* ========== BUTTONS ========== */
 .btn {
-  border-radius: 20px 26px 22px 24px;
+  border-radius: 22px 28px 24px 26px;
   padding: 0.55rem 1.5rem;
   font-weight: 500;
   font-size: 0.85rem;
@@ -292,49 +320,49 @@ h4, h5, h6 {
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
-  border-width: 1px;
+  border-width: 2px;
 }
 
-/* Chrome gloss on buttons */
 .btn::after {
   content: '';
   position: absolute;
   top: 0; left: 15%; width: 70%; height: 50%;
-  background: linear-gradient(180deg, rgba(255,255,255,0.35) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 100%);
   pointer-events: none;
   border-radius: 0 0 50% 50%;
 }
 
 .btn-primary {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+  border-color: var(--gold-dark);
   color: #fff;
-  box-shadow: 0 2px 8px rgba(139, 115, 85, 0.25);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px var(--gold-glow);
 }
 
 .btn-primary:hover {
-  background: var(--accent-warm);
-  border-color: var(--accent-warm);
+  background: linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%);
+  border-color: var(--gold-dark);
   transform: scale(1.04);
-  box-shadow: 0 4px 16px rgba(139, 115, 85, 0.3);
+  box-shadow: 0 4px 16px var(--gold-glow);
 }
 
 .btn-success {
-  background: #7a9a6d;
-  border-color: #7a9a6d;
+  background: linear-gradient(180deg, #8aad7d 0%, #7a9a6d 50%, #6a8a5d 100%);
+  border-color: #6a8a5d;
   color: #fff;
-  box-shadow: 0 2px 8px rgba(122, 154, 109, 0.25);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .btn-outline-secondary {
-  border-color: var(--border-chrome);
+  border-color: var(--gold);
   color: var(--text-mid);
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .btn-outline-secondary:hover {
-  background: rgba(255, 255, 255, 0.7);
-  border-color: var(--border-mirror);
+  background: rgba(255, 255, 255, 0.6);
+  border-color: var(--gold-light);
   color: var(--text-dark);
   transform: scale(1.04);
 }
@@ -350,70 +378,62 @@ h4, h5, h6 {
 }
 
 .btn-outline-primary {
-  border-color: var(--accent);
+  border-color: var(--gold);
   color: var(--accent);
 }
 
 .btn-outline-primary:hover {
-  background: var(--accent);
+  background: var(--gold);
   color: #fff;
 }
 
 .btn-sm {
   padding: 0.35rem 1rem;
   font-size: 0.8rem;
-  border-radius: 16px 22px 18px 20px;
+  border-radius: 18px 24px 20px 22px;
 }
 
-/* ========== FORMS — mirror-shaped frosted inputs ========== */
+/* ========== FORMS ========== */
 .form-control,
 .form-select {
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  border: 1px solid rgba(180, 170, 155, 0.3);
+  border: 1.5px solid var(--gold);
   color: var(--text-dark);
-  border-radius: 24px 32px 28px 26px;
+  border-radius: 22px 30px 26px 24px;
   padding: 0.75rem 1.2rem;
   font-size: 0.9rem;
-  position: relative;
-  overflow: hidden;
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.6) inset,
-    0 -1px 3px rgba(120, 110, 95, 0.06) inset,
-    0 2px 6px rgba(120, 110, 95, 0.06);
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 0 4px rgba(201, 168, 76, 0.06);
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
 }
 
 .form-control:focus,
 .form-select:focus {
-  background: rgba(255, 255, 255, 0.65);
-  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.6);
+  border-color: var(--gold-light);
   color: var(--text-dark);
   transform: scale(1.01);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.7) inset,
-    0 -1px 3px rgba(120, 110, 95, 0.04) inset,
-    0 0 0 3px rgba(139, 115, 85, 0.08),
-    0 4px 12px rgba(120, 110, 95, 0.1);
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 0 0 3px var(--gold-glow),
+    0 4px 12px rgba(120, 110, 95, 0.08);
 }
 
-.form-control::placeholder {
-  color: var(--text-soft);
-}
+.form-control::placeholder { color: var(--text-soft); }
 
-textarea.form-control {
-  border-radius: 26px 34px 30px 28px;
-}
+textarea.form-control { border-radius: 24px 32px 28px 26px; }
 
-/* Alternate input shapes for organic feel */
+/* Alternate input shapes */
 .mb-3:nth-child(odd) .form-control,
 .mb-3:nth-child(odd) .form-select {
-  border-radius: 24px 32px 28px 26px;
+  border-radius: 22px 30px 26px 24px;
 }
 .mb-3:nth-child(even) .form-control,
 .mb-3:nth-child(even) .form-select {
-  border-radius: 30px 24px 26px 32px;
+  border-radius: 28px 22px 24px 30px;
 }
 
 .form-label {
@@ -427,19 +447,120 @@ textarea.form-control {
 }
 
 .form-check-input {
-  background-color: rgba(255, 255, 255, 0.5);
-  border-color: var(--border-mirror);
+  background-color: rgba(255, 255, 255, 0.4);
+  border-color: var(--gold);
   border-radius: 50%;
 }
 
 .form-check-input:checked {
-  background-color: var(--accent);
-  border-color: var(--accent);
+  background-color: var(--gold);
+  border-color: var(--gold-dark);
 }
 
 .form-check-label {
   font-size: 0.9rem;
   color: var(--text-mid);
+}
+
+/* ========== AUTH MIRROR CARD — wavy concave shape via SVG clip-path ========== */
+.auth-mirror {
+  /* Wavy blob shape with concave indentations — matches reference photo */
+  clip-path: url(#mirrorClip);
+  border: none;
+  border-radius: 0;
+  padding: 3.5rem 2.5rem 3rem 2.5rem;
+  background:
+    linear-gradient(
+      165deg,
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(255, 255, 255, 0.4) 35%,
+      rgba(248, 244, 236, 0.45) 65%,
+      rgba(255, 255, 255, 0.5) 100%
+    );
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: none;
+  margin: 0 auto;
+}
+
+/* Gold frame achieved by a shadow wrapper */
+.auth-frame {
+  position: relative;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* The gold border shape — slightly larger version behind the card */
+.auth-frame::before {
+  content: '';
+  position: absolute;
+  top: -4px; left: -4px; right: -4px; bottom: -4px;
+  background: linear-gradient(
+    150deg,
+    var(--gold-light) 0%,
+    var(--gold) 30%,
+    var(--gold-dark) 60%,
+    var(--gold) 100%
+  );
+  clip-path: url(#mirrorClip);
+  z-index: 0;
+  filter: drop-shadow(0 12px 32px rgba(100, 90, 70, 0.15))
+          drop-shadow(0 4px 12px rgba(100, 90, 70, 0.1));
+}
+
+/* Inner gold sheen line */
+.auth-frame::after {
+  content: '';
+  position: absolute;
+  top: 6px; left: 6px; right: 6px; bottom: 6px;
+  clip-path: url(#mirrorClip);
+  border: none;
+  background: transparent;
+  box-shadow: 0 0 0 1px rgba(221, 192, 106, 0.3) inset;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.auth-mirror::before {
+  clip-path: inherit;
+  background: linear-gradient(
+    140deg,
+    transparent 0%,
+    transparent 18%,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.35) 32%,
+    rgba(255, 255, 255, 0.6) 36%,
+    rgba(255, 255, 255, 0.75) 38%,
+    rgba(255, 255, 255, 0.6) 40%,
+    rgba(255, 255, 255, 0.35) 44%,
+    rgba(255, 255, 255, 0.1) 52%,
+    transparent 60%,
+    transparent 100%
+  );
+  opacity: 0.6;
+  border-radius: 0;
+}
+
+.auth-mirror::after {
+  display: none;
+}
+
+/* Inputs inside auth */
+.auth-mirror .form-control,
+.auth-mirror .form-select {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(201, 168, 76, 0.35);
+}
+
+.auth-mirror .form-control:focus,
+.auth-mirror .form-select:focus {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: var(--gold);
+}
+
+.auth-mirror .btn-primary {
+  border-radius: 26px 32px 28px 30px;
+  padding: 0.7rem 1.5rem;
 }
 
 /* ========== BADGES ========== */
@@ -453,12 +574,11 @@ textarea.form-control {
 }
 
 .badge.bg-secondary {
-  background: rgba(180, 170, 155, 0.15) !important;
-  border: 1px solid rgba(180, 170, 155, 0.3);
+  background: rgba(201, 168, 76, 0.1) !important;
+  border: 1px solid rgba(201, 168, 76, 0.25);
   color: var(--text-mid);
 }
 
-/* Priority badges — warm muted tones */
 .badge.bg-success {
   background: rgba(122, 154, 109, 0.12) !important;
   color: #5e7d52;
@@ -483,7 +603,7 @@ textarea.form-control {
 /* ========== ALERTS ========== */
 .alert {
   border-radius: 22px 30px 26px 24px;
-  border: 1px solid rgba(180, 170, 155, 0.3);
+  border: 1.5px solid var(--gold);
   padding: 1rem 1.5rem;
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
@@ -491,177 +611,45 @@ textarea.form-control {
 
 .alert-success {
   background: rgba(122, 154, 109, 0.1);
-  border-color: rgba(122, 154, 109, 0.3);
+  border-color: rgba(122, 154, 109, 0.4);
   color: #5e7d52;
 }
 
 .alert-danger {
   background: rgba(185, 100, 90, 0.08);
-  border-color: rgba(185, 100, 90, 0.25);
+  border-color: rgba(185, 100, 90, 0.35);
   color: #a85550;
 }
 
 /* ========== LINKS ========== */
-a {
-  color: var(--accent);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-a:hover {
-  color: var(--accent-warm);
-}
+a { color: var(--accent); text-decoration: none; transition: color 0.2s ease; }
+a:hover { color: var(--gold-dark); }
 
 /* ========== LIST GROUP ========== */
 .list-group-item {
-  background: rgba(255, 255, 255, 0.35);
-  border-color: rgba(180, 170, 155, 0.2);
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(201, 168, 76, 0.15);
   color: var(--text-dark);
 }
 
-/* ========== AUTH MIRROR CARD ========== */
-.auth-mirror {
-  border-radius: 36% 64% 58% 42% / 40% 36% 64% 60%;
-  padding: 3rem 2.5rem 2.5rem 2.5rem;
-  background:
-    linear-gradient(
-      165deg,
-      rgba(255, 255, 255, 0.65) 0%,
-      rgba(255, 255, 255, 0.4) 30%,
-      rgba(245, 240, 232, 0.45) 60%,
-      rgba(255, 255, 255, 0.5) 100%
-    );
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow:
-    /* top edge highlight */
-    0 1px 0 rgba(255,255,255,0.9) inset,
-    /* left edge highlight */
-    1px 0 0 rgba(255,255,255,0.5) inset,
-    /* bottom inner shadow for depth */
-    0 -2px 6px rgba(180, 170, 155, 0.08) inset,
-    /* frame ring 1 */
-    0 0 0 3px rgba(255, 255, 255, 0.4),
-    /* frame ring 2 */
-    0 0 0 4px rgba(180, 170, 155, 0.15),
-    /* frame ring 3 — outer chrome */
-    0 0 0 7px rgba(255, 255, 255, 0.2),
-    0 0 0 8px rgba(180, 170, 155, 0.1),
-    /* drop shadow */
-    0 20px 60px rgba(120, 110, 95, 0.18),
-    0 8px 24px rgba(120, 110, 95, 0.1);
-}
-
-/* Primary sheen — bright diagonal band */
-.auth-mirror::before {
-  background: linear-gradient(
-    140deg,
-    transparent 0%,
-    transparent 18%,
-    rgba(255, 255, 255, 0.08) 24%,
-    rgba(255, 255, 255, 0.25) 30%,
-    rgba(255, 255, 255, 0.55) 35%,
-    rgba(255, 255, 255, 0.75) 37%,
-    rgba(255, 255, 255, 0.55) 39%,
-    rgba(255, 255, 255, 0.25) 44%,
-    rgba(255, 255, 255, 0.08) 50%,
-    transparent 58%,
-    /* secondary faint sheen lower */
-    transparent 70%,
-    rgba(255, 255, 255, 0.04) 76%,
-    rgba(255, 255, 255, 0.1) 80%,
-    rgba(255, 255, 255, 0.04) 84%,
-    transparent 90%,
-    transparent 100%
-  );
-  opacity: 0.7;
-}
-
-/* Inner chrome lip with subtle texture */
-.auth-mirror::after {
-  top: 8px; left: 8px; right: 8px; bottom: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset;
-}
-
-/* Inputs inside auth card follow the mirror curvature */
-.auth-mirror .form-control,
-.auth-mirror .form-select {
-  background: rgba(255, 255, 255, 0.35);
-  border-color: rgba(180, 170, 155, 0.25);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.5) inset,
-    0 -1px 4px rgba(120, 110, 95, 0.05) inset,
-    0 2px 8px rgba(120, 110, 95, 0.04);
-}
-
-.auth-mirror .form-control:focus,
-.auth-mirror .form-select:focus {
-  background: rgba(255, 255, 255, 0.55);
-  border-color: var(--accent);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.6) inset,
-    0 0 0 3px rgba(139, 115, 85, 0.08),
-    0 4px 12px rgba(120, 110, 95, 0.08);
-}
-
-/* Button inside auth card */
-.auth-mirror .btn-primary {
-  border-radius: 28px 34px 30px 32px;
-  padding: 0.7rem 1.5rem;
-  box-shadow:
-    0 2px 8px rgba(139, 115, 85, 0.2),
-    0 1px 0 rgba(255,255,255,0.2) inset;
-}
-
 /* ========== DETAIL PAGE ========== */
-.col-md-8 > .card {
-  border-radius: 26px 38px 32px 30px;
-  padding: 2rem;
-}
-
-.col-md-4 > .card {
-  border-radius: 32px 26px 30px 36px;
-  padding: 0;
-  overflow: hidden;
-}
-
-.col-md-4 > .card .card-header {
-  margin: 0;
-  padding: 1.25rem 1.5rem;
-}
-
-.col-md-4 > .card .card-body {
-  padding: 1rem 1.5rem;
-}
-
-.col-md-4 > .card .list-group-item {
-  padding: 0.75rem 1.5rem;
-}
-
-/* ========== STATUS COLORS (for board show) ========== */
-.status-todo    { color: var(--text-soft); }
-.status-progress { color: #4a7a9b; }
-.status-review  { color: #9a8040; }
-.status-done    { color: #5e7d52; }
+.col-md-8 > .card { border-radius: 28px 40px 34px 32px; padding: 2rem; }
+.col-md-4 > .card { border-radius: 34px 28px 32px 38px; padding: 0; overflow: hidden; }
+.col-md-4 > .card .card-header { margin: 0; padding: 1.25rem 1.5rem; }
+.col-md-4 > .card .card-body { padding: 1rem 1.5rem; }
+.col-md-4 > .card .list-group-item { padding: 0.75rem 1.5rem; }
 
 /* ========== SCROLLBAR ========== */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(180, 170, 155, 0.3); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(180, 170, 155, 0.5); }
+::-webkit-scrollbar-thumb { background: rgba(201, 168, 76, 0.25); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(201, 168, 76, 0.4); }
 
 /* ========== TEXT ========== */
-.text-muted {
-  color: var(--text-soft) !important;
-}
+.text-muted { color: var(--text-soft) !important; }
 
 /* ========== MOBILE ========== */
 @media (max-width: 768px) {
-  .card {
-    padding: 1.5rem 1.25rem;
-  }
-  .auth-mirror {
-    padding: 2rem 1.5rem;
-  }
+  .card { padding: 1.75rem 1.5rem; }
+  .auth-mirror { padding: 2.5rem 1.75rem 2rem 1.75rem; }
 }

@@ -1,31 +1,55 @@
+<!-- SVG clip-path definition — wavy mirror with concave indentations -->
+<svg width="0" height="0" style="position: absolute;">
+  <defs>
+    <clipPath id="mirrorClip" clipPathUnits="objectBoundingBox">
+      <path d="
+        M 0.5 0.02
+        C 0.65 0.0, 0.78 0.04, 0.88 0.12
+        C 0.96 0.19, 1.0 0.3, 0.99 0.42
+        C 0.98 0.52, 0.95 0.58, 0.97 0.68
+        C 0.99 0.78, 0.96 0.88, 0.88 0.93
+        C 0.78 0.99, 0.65 1.0, 0.5 0.98
+        C 0.35 1.0, 0.22 0.97, 0.13 0.91
+        C 0.05 0.85, 0.02 0.76, 0.04 0.65
+        C 0.06 0.55, 0.03 0.48, 0.02 0.38
+        C 0.01 0.28, 0.05 0.17, 0.14 0.1
+        C 0.24 0.03, 0.36 0.0, 0.5 0.02
+        Z
+      " />
+    </clipPath>
+  </defs>
+</svg>
+
 <div class="row justify-content-center mt-5">
-  <div class="col-11 col-md-5 col-lg-4">
-    <div class="card auth-mirror">
-      <h2 class="text-center mb-4">Welcome back</h2>
+  <div class="col-11 col-md-6 col-lg-5">
+    <div class="auth-frame">
+      <div class="card auth-mirror">
+        <h2 class="text-center mb-4">Welcome back</h2>
 
-      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-        <div class="mb-3">
-          <%= f.label :email, class: "form-label" %>
-          <%= f.email_field :email, class: "form-control", autofocus: true, autocomplete: "email", placeholder: "you@example.com" %>
-        </div>
-
-        <div class="mb-3">
-          <%= f.label :password, class: "form-label" %>
-          <%= f.password_field :password, class: "form-control", autocomplete: "current-password" %>
-        </div>
-
-        <% if devise_mapping.rememberable? %>
-          <div class="mb-3 form-check">
-            <%= f.check_box :remember_me, class: "form-check-input" %>
-            <%= f.label :remember_me, class: "form-check-label" %>
+        <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+          <div class="mb-3">
+            <%= f.label :email, class: "form-label" %>
+            <%= f.email_field :email, class: "form-control", autofocus: true, autocomplete: "email", placeholder: "you@example.com" %>
           </div>
+
+          <div class="mb-3">
+            <%= f.label :password, class: "form-label" %>
+            <%= f.password_field :password, class: "form-control", autocomplete: "current-password" %>
+          </div>
+
+          <% if devise_mapping.rememberable? %>
+            <div class="mb-3 form-check">
+              <%= f.check_box :remember_me, class: "form-check-input" %>
+              <%= f.label :remember_me, class: "form-check-label" %>
+            </div>
+          <% end %>
+
+          <%= f.submit "Sign in", class: "btn btn-primary w-100 mt-2" %>
         <% end %>
 
-        <%= f.submit "Sign in", class: "btn btn-primary w-100 mt-2" %>
-      <% end %>
-
-      <div class="mt-4 text-center">
-        <%= render "devise/shared/links" %>
+        <div class="mt-4 text-center">
+          <%= render "devise/shared/links" %>
+        </div>
       </div>
     </div>
   </div>
