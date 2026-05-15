@@ -17,6 +17,21 @@ export type Book = {
   excerpt?: string;
 };
 
+// Placeholder URLs. Replace per-book with real ones when ready.
+//
+// Stripe: Dashboard -> Products -> [book] -> Create payment link.
+//   The URL looks like: https://buy.stripe.com/aEU14kfAW1g8aPC8wA
+// Amazon: paste the product's full URL or short link (https://a.co/d/xxxxx).
+//
+// Until a placeholder is swapped for a real URL, the corresponding button
+// renders as "Coming soon" (disabled) on the book page. See `isPlaceholder`.
+export const STRIPE_LINK_PLACEHOLDER = "https://buy.stripe.com/REPLACE_ME";
+export const AMAZON_LINK_PLACEHOLDER = "https://www.amazon.com/dp/REPLACE_ME";
+
+export function isPlaceholder(url: string): boolean {
+  return url.includes("REPLACE_ME");
+}
+
 export const books: Book[] = [
   {
     slug: "stones-of-the-seven-hills",
@@ -36,8 +51,8 @@ export const books: Book[] = [
       "Foreword by the author",
     ],
     buy: {
-      primary: { label: "Buy direct ($24)", href: "#" },
-      secondary: { label: "Available on Amazon", href: "#" },
+      primary: { label: "Buy direct ($24)", href: STRIPE_LINK_PLACEHOLDER },
+      secondary: { label: "Available on Amazon", href: AMAZON_LINK_PLACEHOLDER },
     },
     excerpt:
       "Rome does not forget. The travertine of the Colosseum is quarried from the same hills that gave Trajan his columns; the bronze of St. Peter's baldachin was once the roof of the Pantheon. To walk these streets is to read a palimpsest in stone.",
@@ -60,8 +75,8 @@ export const books: Book[] = [
       "Index and bibliography",
     ],
     buy: {
-      primary: { label: "Buy direct ($22)", href: "#" },
-      secondary: { label: "Available on Amazon", href: "#" },
+      primary: { label: "Buy direct ($22)", href: STRIPE_LINK_PLACEHOLDER },
+      secondary: { label: "Available on Amazon", href: AMAZON_LINK_PLACEHOLDER },
     },
     excerpt:
       "He painted the calling of Matthew as one might paint a bar fight: a sudden gesture, a shaft of dirty light, a saint discovered mid-coin. Rome had never seen a Gospel told quite this way.",
@@ -83,8 +98,8 @@ export const books: Book[] = [
       "Signed copies available direct",
     ],
     buy: {
-      primary: { label: "Buy direct ($18)", href: "#" },
-      secondary: { label: "Available on Amazon", href: "#" },
+      primary: { label: "Buy direct ($18)", href: STRIPE_LINK_PLACEHOLDER },
+      secondary: { label: "Available on Amazon", href: AMAZON_LINK_PLACEHOLDER },
     },
     excerpt:
       "Lauds at Santa Sabina in November: the basilica is the same age as the doctrine of the Hypostatic Union, and the wooden doors that close behind me were carved while Augustine was still writing.",

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { books, getBook } from "@/lib/books";
+import { books, getBook, isPlaceholder } from "@/lib/books";
 import { BookCover } from "@/components/BookCover";
 import { OrnamentDivider } from "@/components/Ornament";
 
@@ -52,14 +52,33 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
             </ul>
 
             <div className="mt-10 flex flex-wrap items-center gap-4">
-              <a href={book.buy.primary.href} className="btn-primary">
-                {book.buy.primary.label}
-              </a>
-              {book.buy.secondary && (
-                <a href={book.buy.secondary.href} className="btn-ghost">
-                  {book.buy.secondary.label}
+              {isPlaceholder(book.buy.primary.href) ? (
+                <span
+                  className="btn-primary cursor-not-allowed opacity-60"
+                  aria-disabled="true"
+                  title="Direct purchase not yet enabled"
+                >
+                  Direct purchase &mdash; coming soon
+                </span>
+              ) : (
+                <a href={book.buy.primary.href} className="btn-primary">
+                  {book.buy.primary.label}
                 </a>
               )}
+              {book.buy.secondary &&
+                (isPlaceholder(book.buy.secondary.href) ? (
+                  <span
+                    className="btn-ghost cursor-not-allowed opacity-60"
+                    aria-disabled="true"
+                    title="Listing not yet enabled"
+                  >
+                    Amazon listing &mdash; coming soon
+                  </span>
+                ) : (
+                  <a href={book.buy.secondary.href} className="btn-ghost">
+                    {book.buy.secondary.label}
+                  </a>
+                ))}
               <p className="font-serif text-sm italic text-ink-soft">
                 Free shipping within the EU on direct orders.
               </p>
