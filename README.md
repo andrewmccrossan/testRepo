@@ -1,4 +1,4 @@
-# Domus Aurelia
+# Domus Aurea
 
 A Next.js site for an author writing on Roman art and Catholic history. It serves three purposes:
 

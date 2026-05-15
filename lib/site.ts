@@ -1,5 +1,5 @@
 export const site = {
-  name: "Domus Aurelia",
+  name: "Domus Aurea",
   tagline: "Studies in Roman Art, Faith, and the Long Memory of the West",
   author: "A. M. Caelius",
   authorBlurb:
