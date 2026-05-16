@@ -1,0 +1,94 @@
+name: Sanity diagnostic
+
+# One-shot diagnostic that issues a battery of curl requests against
+# the Sanity Data API to identify why anonymous queries return empty
+# results despite the dataset being public and docs appearing in Studio.
+#
+# Trigger manually from the Actions tab. No secrets required for the
+# anonymous tests; SANITY_AUTH_TOKEN (if set as a repo secret) is also
+# used for the authenticated comparison test.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test 1 — baseline (no perspective param)
+        run: |
+          echo "::group::Test 1: anonymous, no perspective"
+          curl -sS 'https://34m6fz10.api.sanity.io/v2026-01-01/data/query/production?query=*%5B_type%3D%3D%22book%22%5D%7B_id%7D'
+          echo ""
+          echo "::endgroup::"
+
+      - name: Test 2 — perspective=published
+        run: |
+          echo "::group::Test 2: anonymous, perspective=published"
+          curl -sS 'https://34m6fz10.api.sanity.io/v2026-01-01/data/query/production?query=*%5B_type%3D%3D%22book%22%5D%7B_id%7D&perspective=published'
+          echo ""
+          echo "::endgroup::"
+
+      - name: Test 3 — perspective=raw
+        run: |
+          echo "::group::Test 3: anonymous, perspective=raw"
+          curl -sS 'https://34m6fz10.api.sanity.io/v2026-01-01/data/query/production?query=*%5B_type%3D%3D%22book%22%5D%7B_id%7D&perspective=raw'
+          echo ""
+          echo "::endgroup::"
+
+      - name: Test 4 — perspective=drafts
+        run: |
+          echo "::group::Test 4: anonymous, perspective=drafts"
+          curl -sS 'https://34m6fz10.api.sanity.io/v2026-01-01/data/query/production?query=*%5B_type%3D%3D%22book%22%5D%7B_id%7D&perspective=drafts'
+          echo ""
+          echo "::endgroup::"
+
+      - name: Test 5 — older API version (v2024-03-01)
+        run: |
+          echo "::group::Test 5: anonymous, API v2024-03-01"
+          curl -sS 'https://34m6fz10.api.sanity.io/v2024-03-01/data/query/production?query=*%5B_type%3D%3D%22book%22%5D%7B_id%7D'
+          echo ""
+          echo "::endgroup::"
+
+      - name: Test 6 — broader query without _type filter
+        run: |
+          echo "::group::Test 6: anonymous, query all docs (no filter)"
+          curl -sS 'https://34m6fz10.api.sanity.io/v2026-01-01/data/query/production?query=*%5B%5D%7B_id%2C_type%7D'
+          echo ""
+          echo "::endgroup::"
+
+      - name: Test 7 — count(*)
+        run: |
+          echo "::group::Test 7: anonymous, count(*)"
+          curl -sS 'https://34m6fz10.api.sanity.io/v2026-01-01/data/query/production?query=count(*)'
+          echo ""
+          echo "::endgroup::"
+
+      - name: Test 8 — with auth token (if secret is set)
+        env:
+          TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "SANITY_AUTH_TOKEN secret not set — skipping authenticated test."
+            exit 0
+          fi
+          echo "::group::Test 8: authenticated, perspective=raw"
+          curl -sS \
+            -H "Authorization: Bearer $TOKEN" \
+            'https://34m6fz10.api.sanity.io/v2026-01-01/data/query/production?query=*%5B_type%3D%3D%22book%22%5D%7B_id%7D&perspective=raw'
+          echo ""
+          echo "::endgroup::"
+
+      - name: Test 9 — dataset settings (auth required)
+        env:
+          TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "SANITY_AUTH_TOKEN secret not set — skipping."
+            exit 0
+          fi
+          echo "::group::Test 9: dataset metadata"
+          curl -sS -H "Authorization: Bearer $TOKEN" \
+            'https://api.sanity.io/v2024-03-01/projects/34m6fz10/datasets'
+          echo ""
+          echo "::endgroup::"
