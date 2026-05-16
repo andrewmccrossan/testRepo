@@ -1,10 +1,12 @@
-import { books } from "@/lib/books";
+import { getBooks } from "@/lib/books";
 import { BookCard } from "@/components/BookCard";
 import { OrnamentDivider } from "@/components/Ornament";
 
 export const metadata = { title: "Books" };
 
-export default function BooksPage() {
+export default async function BooksPage() {
+  const books = await getBooks();
+
   return (
     <>
       <section className="container-wide pt-16 pb-10 text-center">

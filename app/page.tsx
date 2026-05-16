@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { site } from "@/lib/site";
-import { books } from "@/lib/books";
-import { posts } from "@/lib/posts";
+import { getBooks } from "@/lib/books";
+import { getPosts } from "@/lib/posts";
 import { BookCover } from "@/components/BookCover";
 import { OrnamentDivider, LaurelMotif } from "@/components/Ornament";
 import { NewsletterForm } from "@/components/NewsletterForm";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [books, posts] = await Promise.all([getBooks(), getPosts()]);
   const featuredBook = books[0];
   const recent = posts.slice(0, 2);
 

@@ -1,19 +1,37 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { posts, getPost } from "@/lib/posts";
+import { PortableText, type PortableTextComponents } from "@portabletext/react";
+import { getPost, getPostSlugs } from "@/lib/posts";
 import { OrnamentDivider } from "@/components/Ornament";
 
-export function generateStaticParams() {
-  return posts.map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  const slugs = await getPostSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }) {
-  const post = getPost(params.slug);
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const post = await getPost(params.slug);
   return { title: post?.title ?? "Journal" };
 }
 
-export default function PostPage({ params }: { params: { slug: string } }) {
-  const post = getPost(params.slug);
+const portableComponents: PortableTextComponents = {
+  block: {
+    normal: ({ children, index }) => (
+      <p className={index === 0 ? "drop-cap" : ""}>{children}</p>
+    ),
+  },
+};
+
+export default async function PostPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const post = await getPost(params.slug);
   if (!post) notFound();
 
   return (
@@ -40,11 +58,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
       </header>
 
       <div className="prose-roman mt-12">
-        {post.body.map((para, i) => (
-          <p key={i} className={i === 0 ? "drop-cap" : ""}>
-            {para}
-          </p>
-        ))}
+        <PortableText value={post.body} components={portableComponents} />
       </div>
 
       <OrnamentDivider className="mt-16" />

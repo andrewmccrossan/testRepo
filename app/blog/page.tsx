@@ -1,10 +1,12 @@
-import { posts } from "@/lib/posts";
+import { getPosts } from "@/lib/posts";
 import { PostCard } from "@/components/PostCard";
 import { OrnamentDivider } from "@/components/Ornament";
 
 export const metadata = { title: "Journal" };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const posts = await getPosts();
+
   return (
     <>
       <section className="container-wide pt-16 pb-10 text-center">

@@ -2,7 +2,7 @@
 
 A Next.js site for an author writing on Roman art and Catholic history. It serves three purposes:
 
-- **Books** — a small shelf of published volumes with placeholder buy buttons (`/books`)
+- **Books** — a small shelf of published volumes with optional buy buttons (`/books`)
 - **Journal** — a blog of essays and short writings (`/blog`)
 - **Interactive** — an in-progress book presented chapter by chapter as an interactive object (`/interactive`)
 
@@ -19,46 +19,52 @@ npm run dev
 
 Open <http://localhost:3000>.
 
+The site fetches its content (books and journal posts) from Sanity at build time. `npm run dev` will fetch live from the production dataset — no local content database needed.
+
 ## Content management
 
-Books and journal posts are managed in **Sanity Studio** (a hosted CMS). The author writes in a browser-based editor; published content rebuilds the site automatically.
+Books and journal posts are managed in the **deployed Sanity Studio** at:
 
-- **Project ID:** `34m6fz10`
-- **Dataset:** `production`
+👉 **<https://domus-aurea.sanity.studio>**
 
-### Running the Studio locally
+The author logs in with Google. New posts and edits are published from there. The studio runs on Sanity's infrastructure (we don't host it).
 
-```bash
-npm run studio:dev
-```
-
-Opens the Studio at <http://localhost:3333>. Use this when changing schemas (the field definitions in `sanity/schemas/`).
-
-### Deploying the Studio (one-time + after schema changes)
-
-```bash
-npm run studio:login    # one-time browser OAuth
-npm run studio:deploy   # picks a subdomain, e.g. domus.sanity.studio
-```
-
-After deploy, the author logs in at the chosen URL. Schema changes take effect the next time you run `studio:deploy`.
-
-### Inviting the author
-
-In <https://www.sanity.io/manage>, open the project → **Members** → invite by email with role **Editor**. They'll receive an email; once they accept, they can log into the Studio.
+- **Sanity Project ID:** `34m6fz10`
+- **Sanity Dataset:** `production`
 
 ### Publish-to-rebuild webhook
 
-When content is published in the Studio, Sanity should POST to a Render Deploy Hook to trigger a site rebuild. To set up:
+When content is published in the Studio, Sanity sends a POST to a Render Deploy Hook URL, which kicks off a site rebuild. This is what makes "click Publish, see it live in ~2 min" work.
 
-1. Render dashboard → service → **Settings** → **Deploy Hook** → copy the URL.
-2. <https://www.sanity.io/manage> → project → **API** → **Webhooks** → **Add Webhook**.
-   - URL: the Render Deploy Hook URL
+To set up (one-time):
+
+1. **Get the Render Deploy Hook URL** — Render dashboard → your service → Settings → scroll to "Deploy Hook" → Copy the URL.
+2. **Add the webhook in Sanity** — <https://www.sanity.io/manage/project/34m6fz10/api/webhooks> → Create webhook.
+   - Name: `Render rebuild`
+   - URL: paste the Deploy Hook URL
    - Dataset: `production`
    - Trigger on: Create, Update, Delete
-   - Filter: leave empty (or `_type in ["post", "book"]` to only rebuild on content changes)
+   - Filter: `_type in ["post", "book"]`
+   - HTTP method: POST
+   - HTTP body: leave empty
+3. Save. Now every Publish in the Studio triggers a Render rebuild.
 
-## Other content (not in CMS yet)
+### Dataset visibility
+
+The `production` dataset must be set to **Public** so the build can fetch content anonymously. <https://www.sanity.io/manage/project/34m6fz10/datasets> → `production` → Settings → Visibility: Public.
+
+If you ever want to keep the dataset private, create a Viewer-permission token in Sanity Manage and set `SANITY_API_READ_TOKEN` as a Render env var. The site's Sanity client will pick it up automatically (`lib/sanity/client.ts`).
+
+### Schema changes
+
+The schema for posts and books lives in `sanity/schemas/`. After editing a schema:
+
+1. Test locally with `npm run studio:dev` (opens Studio on `http://localhost:3333`)
+2. Re-deploy the Studio. Two ways:
+   - **Local:** `npm run studio:login` once, then `npm run studio:deploy`
+   - **From the GitHub Actions tab:** trigger the "Deploy Sanity Studio" workflow
+
+## Other content (not in CMS)
 
 - **Site name, nav, author info:** `lib/site.ts`
 - **Interactive chapter list:** `app/interactive/page.tsx`
@@ -67,7 +73,7 @@ When content is published in the Studio, Sanity should POST to a Render Deploy H
 
 ## Where to wire real commerce
 
-Each book in Sanity has a "Primary buy" and "Secondary buy" URL field. Paste in Stripe Payment Link URLs (`https://buy.stripe.com/...`), Gumroad URLs, or Amazon affiliate links. Leaving the primary URL blank renders a disabled "Coming soon" button.
+In the Studio, each book has a "Primary buy URL" and "Secondary buy URL" field. Paste in Stripe Payment Link URLs (`https://buy.stripe.com/...`), Gumroad URLs, or Amazon affiliate links. Leaving the primary URL blank renders a disabled "Coming soon" button.
 
 ## Tech
 
@@ -75,4 +81,5 @@ Each book in Sanity has a "Primary buy" and "Secondary buy" URL field. Paste in 
 - TypeScript
 - Tailwind CSS
 - Sanity v3 (CMS, hosted Studio)
+- `@portabletext/react` for rendering rich-text post bodies
 - Google Fonts via `next/font` (Cinzel, Cormorant Garamond)

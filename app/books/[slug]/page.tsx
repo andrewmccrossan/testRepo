@@ -1,21 +1,33 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { books, getBook, isPlaceholder } from "@/lib/books";
+import { getBook, getBookSlugs } from "@/lib/books";
 import { BookCover } from "@/components/BookCover";
 import { OrnamentDivider } from "@/components/Ornament";
 
-export function generateStaticParams() {
-  return books.map((b) => ({ slug: b.slug }));
+export async function generateStaticParams() {
+  const slugs = await getBookSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }) {
-  const book = getBook(params.slug);
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const book = await getBook(params.slug);
   return { title: book?.title ?? "Book" };
 }
 
-export default function BookDetailPage({ params }: { params: { slug: string } }) {
-  const book = getBook(params.slug);
+export default async function BookDetailPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const book = await getBook(params.slug);
   if (!book) notFound();
+
+  const primaryHref = book.buy.primary.href;
+  const secondary = book.buy.secondary;
 
   return (
     <>
@@ -52,7 +64,11 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
             </ul>
 
             <div className="mt-10 flex flex-wrap items-center gap-4">
-              {isPlaceholder(book.buy.primary.href) ? (
+              {primaryHref ? (
+                <a href={primaryHref} className="btn-primary">
+                  {book.buy.primary.label}
+                </a>
+              ) : (
                 <span
                   className="btn-primary cursor-not-allowed opacity-60"
                   aria-disabled="true"
@@ -60,25 +76,12 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                 >
                   Direct purchase &mdash; coming soon
                 </span>
-              ) : (
-                <a href={book.buy.primary.href} className="btn-primary">
-                  {book.buy.primary.label}
+              )}
+              {secondary && (
+                <a href={secondary.href} className="btn-ghost">
+                  {secondary.label}
                 </a>
               )}
-              {book.buy.secondary &&
-                (isPlaceholder(book.buy.secondary.href) ? (
-                  <span
-                    className="btn-ghost cursor-not-allowed opacity-60"
-                    aria-disabled="true"
-                    title="Listing not yet enabled"
-                  >
-                    Amazon listing &mdash; coming soon
-                  </span>
-                ) : (
-                  <a href={book.buy.secondary.href} className="btn-ghost">
-                    {book.buy.secondary.label}
-                  </a>
-                ))}
               <p className="font-serif text-sm italic text-ink-soft">
                 Free shipping within the EU on direct orders.
               </p>

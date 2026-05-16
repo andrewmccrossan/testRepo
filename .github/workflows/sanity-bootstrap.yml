@@ -1,27 +1,18 @@
-name: Sanity bootstrap
+name: Deploy Sanity Studio
 
-# One-shot workflow that:
-#   1. Imports the existing hardcoded posts and books into Sanity
-#   2. Deploys the Sanity Studio to https://domus-aurea.sanity.studio
+# Re-deploys the Sanity Studio bundle to https://domus-aurea.sanity.studio.
+# Trigger manually from the Actions tab whenever you change the schemas
+# in sanity/schemas/ or want to push studio config changes live.
 #
-# Trigger manually from the Actions tab. Requires the repo secret
-# SANITY_AUTH_TOKEN (an Editor-permission API token from Sanity Manage).
+# Requires the repo secret SANITY_AUTH_TOKEN — a Sanity API token with
+# at least the "Deploy Studio" grant. Day-to-day content editing in the
+# Studio does not need this; only the deploy step does.
 
 on:
   workflow_dispatch:
-    inputs:
-      studio_host:
-        description: "Sanity studio hostname (without .sanity.studio)"
-        required: true
-        default: "domus-aurea"
-      skip_import:
-        description: "Skip importing seed content (use on re-runs once content exists)"
-        required: false
-        default: true
-        type: boolean
 
 jobs:
-  bootstrap:
+  deploy:
     runs-on: ubuntu-latest
     env:
       SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
@@ -36,29 +27,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Print Sanity CLI version
-        run: npx sanity --version
-
-      - name: Check if studio hostname is available
-        run: |
-          echo "Checking availability of '${{ inputs.studio_host }}'..."
-          npx sanity hostname-availability "${{ inputs.studio_host }}" || true
-
-      - name: Import seed content into Sanity
-        if: ${{ !inputs.skip_import }}
-        run: node scripts/migrate-to-sanity.mjs
-
       - name: Build studio bundle
         run: npx sanity build --yes
 
       - name: Deploy studio bundle
-        # The Sanity CLI's `deploy` positional arg is the build SOURCE_DIR
-        # (defaults to ./dist), NOT the studio hostname. Hostname is read
-        # from sanity.cli.ts's studioHost field. Don't pass anything here.
-        #
-        # Also: the CLI exits 0 even when the deploy fails (e.g. missing
-        # grant), so we grep the captured output for failure markers and
-        # exit non-zero ourselves.
+        # The Sanity CLI exits 0 even when the deploy fails (e.g. missing
+        # grant). Capture output, grep for failure markers, exit non-zero
+        # ourselves so the step turns red.
         run: |
           set -o pipefail
           npx sanity deploy --no-build 2>&1 | tee deploy.log
@@ -69,14 +44,12 @@ jobs:
           fi
 
       - name: Confirm studio is reachable
-        # An unauthenticated request to a deployed studio returns 302
-        # (redirect to Sanity's OAuth login). Accept any 2xx or 3xx as
-        # proof the studio is registered and serving.
+        # An unauthenticated request returns 302 (redirect to OAuth login).
+        # Accept any 2xx or 3xx as proof the studio is registered.
         run: |
-          URL="https://${{ inputs.studio_host }}.sanity.studio"
-          echo "Checking $URL ..."
+          URL="https://domus-aurea.sanity.studio"
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
-          echo "HTTP $STATUS"
+          echo "$URL -> HTTP $STATUS"
           if [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 400 ]; then
             echo "::notice::Studio live at $URL"
           else
