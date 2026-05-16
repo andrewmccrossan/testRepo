@@ -19,23 +19,60 @@ npm run dev
 
 Open <http://localhost:3000>.
 
-## Where to edit content
+## Content management
+
+Books and journal posts are managed in **Sanity Studio** (a hosted CMS). The author writes in a browser-based editor; published content rebuilds the site automatically.
+
+- **Project ID:** `34m6fz10`
+- **Dataset:** `production`
+
+### Running the Studio locally
+
+```bash
+npm run studio:dev
+```
+
+Opens the Studio at <http://localhost:3333>. Use this when changing schemas (the field definitions in `sanity/schemas/`).
+
+### Deploying the Studio (one-time + after schema changes)
+
+```bash
+npm run studio:login    # one-time browser OAuth
+npm run studio:deploy   # picks a subdomain, e.g. domus.sanity.studio
+```
+
+After deploy, the author logs in at the chosen URL. Schema changes take effect the next time you run `studio:deploy`.
+
+### Inviting the author
+
+In <https://www.sanity.io/manage>, open the project → **Members** → invite by email with role **Editor**. They'll receive an email; once they accept, they can log into the Studio.
+
+### Publish-to-rebuild webhook
+
+When content is published in the Studio, Sanity should POST to a Render Deploy Hook to trigger a site rebuild. To set up:
+
+1. Render dashboard → service → **Settings** → **Deploy Hook** → copy the URL.
+2. <https://www.sanity.io/manage> → project → **API** → **Webhooks** → **Add Webhook**.
+   - URL: the Render Deploy Hook URL
+   - Dataset: `production`
+   - Trigger on: Create, Update, Delete
+   - Filter: leave empty (or `_type in ["post", "book"]` to only rebuild on content changes)
+
+## Other content (not in CMS yet)
 
 - **Site name, nav, author info:** `lib/site.ts`
-- **Books (titles, prices, buy links, excerpts):** `lib/books.ts`
-- **Blog posts:** `lib/posts.ts`
 - **Interactive chapter list:** `app/interactive/page.tsx`
 - **Sample chapter prose:** `app/interactive/chapter-1/page.tsx`
 - **Color palette and fonts:** `tailwind.config.ts` and `app/layout.tsx`
 
 ## Where to wire real commerce
 
-Each book in `lib/books.ts` has a `buy.primary` and optional `buy.secondary` link. Replace the `#` placeholders with Stripe Payment Link URLs (`https://buy.stripe.com/...`), Gumroad URLs, or Amazon affiliate links. No code changes needed.
+Each book in Sanity has a "Primary buy" and "Secondary buy" URL field. Paste in Stripe Payment Link URLs (`https://buy.stripe.com/...`), Gumroad URLs, or Amazon affiliate links. Leaving the primary URL blank renders a disabled "Coming soon" button.
 
 ## Tech
 
-- Next.js 14 (App Router)
+- Next.js 14 (App Router, static export)
 - TypeScript
 - Tailwind CSS
+- Sanity v3 (CMS, hosted Studio)
 - Google Fonts via `next/font` (Cinzel, Cormorant Garamond)
-- No external images, no third-party dependencies beyond the stack
