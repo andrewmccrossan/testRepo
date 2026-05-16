@@ -14,6 +14,11 @@ on:
         description: "Sanity studio hostname (without .sanity.studio)"
         required: true
         default: "domus-aurea"
+      skip_import:
+        description: "Skip importing seed content (use on re-runs once content exists)"
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   bootstrap:
@@ -40,6 +45,7 @@ jobs:
           npx sanity hostname-availability "${{ inputs.studio_host }}" || true
 
       - name: Import seed content into Sanity
+        if: ${{ !inputs.skip_import }}
         run: node scripts/migrate-to-sanity.mjs
 
       - name: Build studio bundle
