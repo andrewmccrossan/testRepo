@@ -8,6 +8,7 @@ export const site = {
   nav: [
     { href: "/", label: "Home" },
     { href: "/books", label: "Books" },
+    { href: "/cards", label: "Cards" },
     { href: "/blog", label: "Journal" },
     { href: "/interactive", label: "Interactive" },
     { href: "/about", label: "About" },

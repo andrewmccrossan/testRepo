@@ -77,3 +77,34 @@ export const BOOK_BY_SLUG_QUERY = /* groq */ `
 export const BOOK_SLUGS_QUERY = /* groq */ `
   *[_type == "book" && defined(slug.current)][].slug.current
 `;
+
+export const CARD_THEMES_QUERY = /* groq */ `
+  *[_type == "photoTheme"] | order(coalesce(order, 9999) asc, name asc) {
+    "slug": slug.current,
+    name,
+    description,
+    order
+  }
+`;
+
+export const CARDS_QUERY = /* groq */ `
+  *[_type == "photoCard" && defined(theme->slug.current) && defined(code)]
+    | order(coalesce(theme->order, 9999) asc, theme->name asc, title asc) {
+    code,
+    "slug": slug.current,
+    title,
+    description,
+    image,
+    "themeSlug": theme->slug.current,
+    "themeName": theme->name
+  }
+`;
+
+export const CARD_SETTINGS_QUERY = /* groq */ `
+  *[_type == "cardSettings"][0] {
+    packSize,
+    price,
+    stripePaymentUrl,
+    intro
+  }
+`;
