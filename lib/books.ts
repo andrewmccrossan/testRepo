@@ -5,12 +5,23 @@ import {
   BOOK_SLUGS_QUERY,
 } from "./sanity/queries";
 
+export type BookImage = {
+  _key?: string;
+  _type: "image";
+  asset: { _ref: string; _type: "reference" };
+  hotspot?: { x: number; y: number; height: number; width: number };
+  crop?: { top: number; bottom: number; left: number; right: number };
+  alt?: string;
+  caption?: string;
+};
+
 export type Book = {
   slug: string;
   title: string;
   subtitle: string;
   year: string;
   price: string;
+  images?: BookImage[];
   cover: {
     palette: [string, string];
     motif: "cross" | "laurel" | "column" | "rose";
@@ -30,6 +41,7 @@ type SanityBook = {
   subtitle?: string;
   year?: string;
   price?: string;
+  images?: BookImage[];
   coverBackgroundColor?: string;
   coverAccentColor?: string;
   coverMotif?: "cross" | "laurel" | "column" | "rose";
@@ -49,6 +61,7 @@ function toBook(d: SanityBook): Book {
     subtitle: d.subtitle ?? "",
     year: d.year ?? "",
     price: d.price ?? "",
+    images: d.images && d.images.length > 0 ? d.images : undefined,
     cover: {
       palette: [
         d.coverBackgroundColor ?? "#1F1812",

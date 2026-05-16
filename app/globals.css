@@ -101,4 +101,11 @@
   .prose-roman a {
     @apply text-crimson underline decoration-gold/60 underline-offset-4 hover:decoration-crimson;
   }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }

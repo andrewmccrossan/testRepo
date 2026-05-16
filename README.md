@@ -71,6 +71,15 @@ The schema for posts and books lives in `sanity/schemas/`. After editing a schem
 - **Sample chapter prose:** `app/interactive/chapter-1/page.tsx`
 - **Color palette and fonts:** `tailwind.config.ts` and `app/layout.tsx`
 
+## Book images
+
+Each book in Sanity has a **"Cover and additional images"** field — an ordered array of images. The first image is used as the cover (shown in book cards, the homepage feature, and the book detail page). On the detail page, all images render in a swipeable gallery with prev/next arrows and dot indicators.
+
+- **Format / size**: anything; aim for at least 1200px on the long side for retina. Sanity's CDN resizes and converts format (WebP/AVIF) automatically.
+- **Aspect ratio**: gallery slides display at 2:3 (book-cover ratio) using cover-fit, so non-2:3 images will crop. Configure the hotspot in Studio to control how each image is centered.
+- **Per image**: optional alt text (accessibility / SEO) and caption (shown below the image in the gallery).
+- **Fallback**: books with zero images uploaded show the SVG-generated cover (using `coverBackgroundColor`, `coverAccentColor`, `coverMotif`).
+
 ## Where to wire real commerce
 
 In the Studio, each book has a "Primary buy URL" and "Secondary buy URL" field. Paste in Stripe Payment Link URLs (`https://buy.stripe.com/...`), Gumroad URLs, or Amazon affiliate links. Leaving the primary URL blank renders a disabled "Coming soon" button.

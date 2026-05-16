@@ -1,14 +1,36 @@
 import { MotifByName } from "./Ornament";
 import type { Book } from "@/lib/books";
+import { urlForImage } from "@/lib/sanity/image";
 
 export function BookCover({ book, size = "md" }: { book: Book; size?: "sm" | "md" | "lg" }) {
-  const [bg, accent] = book.cover.palette;
   const dims =
     size === "lg"
       ? "h-[28rem] w-[19rem]"
       : size === "sm"
       ? "h-44 w-28"
       : "h-72 w-48";
+
+  // Prefer a real uploaded image when available; otherwise fall back to
+  // the generated SVG cover so books without uploaded images still render.
+  const firstImage = book.images?.[0];
+  if (firstImage) {
+    const width = size === "lg" ? 800 : size === "sm" ? 240 : 480;
+    const url = urlForImage(firstImage).width(width).auto("format").url();
+    return (
+      <div
+        className={`relative ${dims} shrink-0 overflow-hidden shadow-[6px_6px_0_rgba(31,24,18,0.10),0_18px_40px_-15px_rgba(31,24,18,0.45)]`}
+      >
+        <img
+          src={url}
+          alt={firstImage.alt ?? book.title}
+          className="absolute inset-0 h-full w-full object-cover"
+          loading="lazy"
+        />
+      </div>
+    );
+  }
+
+  const [bg, accent] = book.cover.palette;
   const motifSize =
     size === "lg" ? "h-32 w-32" : size === "sm" ? "h-10 w-10" : "h-20 w-20";
 

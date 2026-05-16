@@ -20,6 +20,33 @@ export const book = defineType({
     defineField({ name: "year", type: "string" }),
     defineField({ name: "price", type: "string" }),
     defineField({
+      name: "images",
+      title: "Cover and additional images",
+      description:
+        "First image is the primary cover (shown in lists, cards, and homepage). Drag to reorder. Leave empty to fall back to the generated SVG cover.",
+      type: "array",
+      of: [
+        {
+          type: "image",
+          options: { hotspot: true },
+          fields: [
+            defineField({
+              name: "alt",
+              title: "Alt text",
+              type: "string",
+              description: "Short description of the image for screen readers and SEO.",
+            }),
+            defineField({
+              name: "caption",
+              title: "Caption",
+              type: "string",
+              description: "Optional caption shown below the image in the gallery.",
+            }),
+          ],
+        },
+      ],
+    }),
+    defineField({
       name: "coverBackgroundColor",
       title: "Cover background color (hex)",
       type: "string",

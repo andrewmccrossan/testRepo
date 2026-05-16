@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBook, getBookSlugs } from "@/lib/books";
 import { BookCover } from "@/components/BookCover";
+import { BookGallery } from "@/components/BookGallery";
 import { OrnamentDivider } from "@/components/Ornament";
 
 export async function generateStaticParams() {
@@ -41,7 +42,11 @@ export default async function BookDetailPage({
 
         <div className="mt-10 grid grid-cols-1 gap-14 lg:grid-cols-[auto,1fr] lg:gap-20">
           <div className="flex justify-center lg:block">
-            <BookCover book={book} size="lg" />
+            {book.images && book.images.length > 0 ? (
+              <BookGallery images={book.images} title={book.title} />
+            ) : (
+              <BookCover book={book} size="lg" />
+            )}
           </div>
 
           <div>
