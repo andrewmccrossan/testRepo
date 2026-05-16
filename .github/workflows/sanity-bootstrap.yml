@@ -69,12 +69,15 @@ jobs:
           fi
 
       - name: Confirm studio is reachable
+        # An unauthenticated request to a deployed studio returns 302
+        # (redirect to Sanity's OAuth login). Accept any 2xx or 3xx as
+        # proof the studio is registered and serving.
         run: |
           URL="https://${{ inputs.studio_host }}.sanity.studio"
           echo "Checking $URL ..."
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
           echo "HTTP $STATUS"
-          if [ "$STATUS" = "200" ]; then
+          if [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 400 ]; then
             echo "::notice::Studio live at $URL"
           else
             echo "::error::Studio not reachable (HTTP $STATUS) at $URL"
