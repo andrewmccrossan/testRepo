@@ -22,6 +22,10 @@ export const sanityClient = createClient({
   projectId,
   dataset,
   apiVersion: "2026-01-01",
-  useCdn: true,
+  // useCdn: false — the CDN edge caches responses for up to 60s and can
+  // serve stale "empty" results after a dataset visibility change. Static
+  // export builds run rarely, so we always want fresh reads. Switch to
+  // true only if we move to ISR/runtime fetching with high traffic.
+  useCdn: false,
   token: process.env.SANITY_API_READ_TOKEN,
 });
