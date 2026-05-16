@@ -2,19 +2,24 @@ name: Sanity bootstrap
 
 # One-shot workflow that:
 #   1. Imports the existing hardcoded posts and books into Sanity
-#   2. Deploys the Sanity Studio to https://domus.sanity.studio
+#   2. Deploys the Sanity Studio to https://domus-aurea.sanity.studio
 #
 # Trigger manually from the Actions tab. Requires the repo secret
 # SANITY_AUTH_TOKEN (an Editor-permission API token from Sanity Manage).
-# After running successfully once, you can delete this workflow file —
-# day-to-day content editing happens in the deployed Studio.
 
 on:
   workflow_dispatch:
+    inputs:
+      studio_host:
+        description: "Sanity studio hostname (without .sanity.studio)"
+        required: true
+        default: "domus-aurea"
 
 jobs:
   bootstrap:
     runs-on: ubuntu-latest
+    env:
+      SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -26,12 +31,24 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Print Sanity CLI version
+        run: npx sanity --version
+
+      - name: Check if studio hostname is available
+        run: |
+          echo "Checking availability of '${{ inputs.studio_host }}'..."
+          npx sanity hostname-availability "${{ inputs.studio_host }}" || true
+
       - name: Import seed content into Sanity
-        env:
-          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
         run: node scripts/migrate-to-sanity.mjs
 
-      - name: Deploy Sanity Studio
-        env:
-          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
-        run: npx sanity deploy
+      - name: Build studio bundle
+        run: npx sanity build --yes
+
+      - name: Deploy studio bundle
+        run: npx sanity deploy "${{ inputs.studio_host }}" --no-build
+
+      - name: Confirm deploy
+        run: |
+          echo "If the deploy succeeded, the studio is at:"
+          echo "  https://${{ inputs.studio_host }}.sanity.studio"
