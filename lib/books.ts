@@ -88,5 +88,17 @@ export async function getBook(slug: string): Promise<Book | undefined> {
 }
 
 export async function getBookSlugs(): Promise<string[]> {
-  return sanityClient.fetch<string[]>(BOOK_SLUGS_QUERY);
+  try {
+    const slugs = await sanityClient.fetch<string[]>(BOOK_SLUGS_QUERY);
+    // eslint-disable-next-line no-console
+    console.log(
+      `[sanity] getBookSlugs returned ${slugs?.length ?? 0} slugs:`,
+      slugs,
+    );
+    return slugs ?? [];
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error("[sanity] getBookSlugs FAILED:", err);
+    throw err;
+  }
 }
