@@ -52,13 +52,17 @@ jobs:
         run: npx sanity build --yes
 
       - name: Deploy studio bundle
-        # The Sanity CLI exits 0 even when the deploy fails (e.g. missing
-        # grant). Capture output, check for known failure markers, exit
-        # non-zero ourselves so the step turns red.
+        # The Sanity CLI's `deploy` positional arg is the build SOURCE_DIR
+        # (defaults to ./dist), NOT the studio hostname. Hostname is read
+        # from sanity.cli.ts's studioHost field. Don't pass anything here.
+        #
+        # Also: the CLI exits 0 even when the deploy fails (e.g. missing
+        # grant), so we grep the captured output for failure markers and
+        # exit non-zero ourselves.
         run: |
           set -o pipefail
-          npx sanity deploy "${{ inputs.studio_host }}" --no-build 2>&1 | tee deploy.log
-          if grep -E "(× |Forbidden|missing required grant|failed)" deploy.log; then
+          npx sanity deploy --no-build 2>&1 | tee deploy.log
+          if grep -E "(× |Forbidden|missing required grant|^Error:|failed:)" deploy.log; then
             echo ""
             echo "::error::sanity deploy reported failure markers in output (see above)."
             exit 1
