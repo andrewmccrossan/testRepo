@@ -63,5 +63,14 @@ export async function getPost(slug: string): Promise<Post | undefined> {
 }
 
 export async function getPostSlugs(): Promise<string[]> {
-  return sanityClient.fetch<string[]>(POST_SLUGS_QUERY);
+  try {
+    const slugs = await sanityClient.fetch<string[]>(POST_SLUGS_QUERY);
+    // eslint-disable-next-line no-console
+    console.log(`[sanity] getPostSlugs returned ${slugs?.length ?? 0} slugs`);
+    return slugs ?? [];
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error("[sanity] getPostSlugs FAILED:", err);
+    throw err;
+  }
 }
