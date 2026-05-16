@@ -1,0 +1,37 @@
+name: Sanity bootstrap
+
+# One-shot workflow that:
+#   1. Imports the existing hardcoded posts and books into Sanity
+#   2. Deploys the Sanity Studio to https://domus.sanity.studio
+#
+# Trigger manually from the Actions tab. Requires the repo secret
+# SANITY_AUTH_TOKEN (an Editor-permission API token from Sanity Manage).
+# After running successfully once, you can delete this workflow file —
+# day-to-day content editing happens in the deployed Studio.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Import seed content into Sanity
+        env:
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+        run: node scripts/migrate-to-sanity.mjs
+
+      - name: Deploy Sanity Studio
+        env:
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+        run: npx sanity deploy
