@@ -46,9 +46,27 @@ jobs:
         run: npx sanity build --yes
 
       - name: Deploy studio bundle
-        run: npx sanity deploy "${{ inputs.studio_host }}" --no-build
-
-      - name: Confirm deploy
+        # The Sanity CLI exits 0 even when the deploy fails (e.g. missing
+        # grant). Capture output, check for known failure markers, exit
+        # non-zero ourselves so the step turns red.
         run: |
-          echo "If the deploy succeeded, the studio is at:"
-          echo "  https://${{ inputs.studio_host }}.sanity.studio"
+          set -o pipefail
+          npx sanity deploy "${{ inputs.studio_host }}" --no-build 2>&1 | tee deploy.log
+          if grep -E "(× |Forbidden|missing required grant|failed)" deploy.log; then
+            echo ""
+            echo "::error::sanity deploy reported failure markers in output (see above)."
+            exit 1
+          fi
+
+      - name: Confirm studio is reachable
+        run: |
+          URL="https://${{ inputs.studio_host }}.sanity.studio"
+          echo "Checking $URL ..."
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+          echo "HTTP $STATUS"
+          if [ "$STATUS" = "200" ]; then
+            echo "::notice::Studio live at $URL"
+          else
+            echo "::error::Studio not reachable (HTTP $STATUS) at $URL"
+            exit 1
+          fi
