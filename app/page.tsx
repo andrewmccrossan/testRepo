@@ -21,18 +21,16 @@ export default async function HomePage() {
       <section className="relative overflow-hidden">
         <div className="container-wide grid grid-cols-1 items-center gap-16 pt-16 pb-24 lg:grid-cols-[1.1fr,0.9fr]">
           <div className="relative">
-            <p className="eyebrow">Thirty years in Italy</p>
+            <p className="eyebrow">A pilgrim&rsquo;s guide to Rome and Italy</p>
             <h1 className="mt-6 font-display text-5xl uppercase leading-[1.05] tracking-wide text-ink md:text-6xl lg:text-7xl">
-              Everything in Rome
-              <span className="block italic text-crimson" style={{ fontStyle: "italic" }}>
-                overwhelmed me.
-              </span>
+              Faith, saints, and stones I keep coming back to.
             </h1>
             <p className="mt-6 max-w-xl font-serif text-xl leading-relaxed text-ink-soft">
-              Thirty years of return trips, six books, and a million
-              photographs later &mdash; this is where I share, one site at a
-              time, what every visitor to Italy should know. Biased, detailed,
-              and accompanied by my own pictures.
+              After thirty years and six books on Rome, this site is where I
+              write about one Italian site at a time &mdash; what to look at,
+              who built it and why, and what makes it worth more than the two
+              minutes most visitors give it. Biased, detailed, accompanied by
+              my own photographs.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <Link href="/books" className="btn-primary">
