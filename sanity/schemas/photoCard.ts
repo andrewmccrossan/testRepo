@@ -12,7 +12,7 @@ function genCode(): string {
 
 export const photoCard = defineType({
   name: "photoCard",
-  title: "Photo Card",
+  title: "Photographic Greeting Card",
   type: "document",
   fields: [
     defineField({

@@ -3,7 +3,7 @@
 A Next.js site for an author writing on Roman art and Catholic history. It serves three purposes:
 
 - **Books** — a small shelf of published volumes with optional buy buttons (`/books`)
-- **Cards** — a mix-and-match photo card shop where customers build a pack of N from a catalog of photographs (any combination, any quantity per photo) (`/cards`)
+- **Cards** — a mix-and-match shop for photographic greeting cards where customers build a pack of N from a catalog of photographs (any combination, any quantity per photo) (`/cards`)
 - **Journal** — a blog of essays and short writings (`/blog`)
 - **Interactive** — an in-progress book presented chapter by chapter as an interactive object (`/interactive`)
 
@@ -87,14 +87,14 @@ Each book in Sanity has a **"Cover and additional images"** field — an ordered
 
 In the Studio, each book has a "Primary buy URL" and "Secondary buy URL" field. Paste in Stripe Payment Link URLs (`https://buy.stripe.com/...`), Gumroad URLs, or Amazon affiliate links. Leaving the primary URL blank renders a disabled "Coming soon" button.
 
-### Photo cards
+### Photographic greeting cards
 
 The cards shop is a **mix-and-match cart**: the customer browses a flat catalog of photographs, adds however many of each they like to total N cards (default N = 12), and checks out for a single flat price. The selection — including quantities — is sent to Stripe via the Payment Link's `client_reference_id` URL parameter, so each order in the Stripe dashboard shows exactly which photographs and how many of each.
 
 #### Sanity content
 
-1. **Photo Card** — one per card design. Upload the image, set a title. The 6-char `code` field auto-generates; don't edit it.
-2. **Photo Card Pack — Settings** — create exactly one of these. Set:
+1. **Photographic Greeting Card** — one per card design. Upload the image, set a title. The 6-char `code` field auto-generates; don't edit it.
+2. **Photographic Greeting Card Pack — Settings** — create exactly one of these. Set:
    - `packSize` (default 12) — how many cards in a pack
    - `price` — display price, e.g. `"$30"`
    - `stripePaymentUrl` — Stripe Payment Link for the "Pack of N cards" product (see below). Leave blank to show "Coming soon" on the checkout button.
@@ -102,9 +102,9 @@ The cards shop is a **mix-and-match cart**: the customer browses a flat catalog 
 
 #### Stripe setup
 
-Create **one** Stripe product priced at the pack price (e.g. "Roman Photo Cards — Pack of 12, $30"). Generate a Payment Link for it. Paste that URL into `stripePaymentUrl` in the Card Pack Settings doc.
+Create **one** Stripe product priced at the pack price (e.g. "Roman Photographic Greeting Cards — Pack of 12, $30"). Generate a Payment Link for it. Paste that URL into `stripePaymentUrl` in the Card Pack Settings doc.
 
-When a customer clicks Checkout, the site appends `?client_reference_id=CODE1xN,CODE2xN,...` where each entry is `<code>x<quantity>`. For a pack of 12 with 5 of one photo and 7 of another, the reference reads `ABC123x5,DEF456x7`. In the Stripe dashboard, look up each code in the Studio (Photo Card → search by code) to know what to print and how many.
+When a customer clicks Checkout, the site appends `?client_reference_id=CODE1xN,CODE2xN,...` where each entry is `<code>x<quantity>`. For a pack of 12 with 5 of one photo and 7 of another, the reference reads `ABC123x5,DEF456x7`. In the Stripe dashboard, look up each code in the Studio (Photographic Greeting Card → search by code) to know what to print and how many.
 
 **Limitation**: the customer sees a generic "Pack of 12 $30" on the Stripe checkout page, not their itemized selection (they did just see it on our site before clicking through). If a richer checkout is needed later, the upgrade path is a serverless function that creates Stripe Checkout Sessions with one line item per photo.
 

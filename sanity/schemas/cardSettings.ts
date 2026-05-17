@@ -6,7 +6,7 @@ import { defineType, defineField } from "sanity";
 // checkout button.
 export const cardSettings = defineType({
   name: "cardSettings",
-  title: "Photo Card Pack - Settings",
+  title: "Photographic Greeting Card Pack - Settings",
   type: "document",
   fields: [
     defineField({
@@ -41,7 +41,7 @@ export const cardSettings = defineType({
   preview: {
     select: { packSize: "packSize", price: "price" },
     prepare: ({ packSize, price }) => ({
-      title: "Card Pack Settings",
+      title: "Greeting Card Pack Settings",
       subtitle:
         packSize && price ? `Pack of ${packSize} - ${price}` : undefined,
     }),

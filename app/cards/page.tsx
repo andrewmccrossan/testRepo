@@ -2,7 +2,7 @@ import { getCardsPageData } from "@/lib/cards";
 import { CardsBrowser } from "@/components/CardsBrowser";
 import { OrnamentDivider } from "@/components/Ornament";
 
-export const metadata = { title: "Photo Cards" };
+export const metadata = { title: "Photographic Greeting Cards" };
 
 export default async function CardsPage() {
   const { cards, settings } = await getCardsPageData();
@@ -11,14 +11,14 @@ export default async function CardsPage() {
   const price = settings?.price ?? "";
   const intro =
     settings?.intro?.trim() ||
-    `Hand-printed photographic cards from across Rome. Build a pack of ${packSize} — choose any combination, as many of each photograph as you like.`;
+    `Hand-printed photographic greeting cards from across Rome. Build a pack of ${packSize} — choose any combination, as many of each photograph as you like.`;
 
   return (
     <>
       <section className="container-wide pt-16 pb-10 text-center">
         <p className="eyebrow">Imagines Romae</p>
         <h1 className="mt-4 font-display text-5xl uppercase tracking-wide text-ink md:text-6xl">
-          Photo Cards
+          Photographic Greeting Cards
         </h1>
         <p className="mx-auto mt-6 max-w-2xl font-serif text-xl italic leading-relaxed text-ink-soft">
           {intro}
