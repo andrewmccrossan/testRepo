@@ -127,7 +127,7 @@ export function CardsBrowser({
                   : "border-stone/60 hover:border-gold",
               ].join(" ")}
             >
-              <div className="relative aspect-square bg-stone/30">
+              <div className="relative aspect-[5/4] bg-stone/30">
                 <img
                   src={card.imageUrl}
                   alt={card.imageAlt ?? card.title}
@@ -195,7 +195,7 @@ export function CardsBrowser({
                       <img
                         src={card.imageUrl}
                         alt={card.imageAlt ?? card.title}
-                        className="h-14 w-14 flex-none object-cover"
+                        className="aspect-[5/4] h-14 flex-none object-cover"
                       />
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-display text-[12px] uppercase tracking-[0.16em] text-ink">

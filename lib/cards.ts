@@ -47,12 +47,12 @@ function toCard(d: SanityCard): PhotoCard | null {
     title: d.title,
     description: d.description,
     imageUrl: urlForImage(d.image)
-      .width(640)
+      .width(800)
       .height(640)
       .fit("crop")
       .auto("format")
       .url(),
-    imageUrlLarge: urlForImage(d.image).width(1200).auto("format").url(),
+    imageUrlLarge: urlForImage(d.image).width(1400).auto("format").url(),
     imageAlt: d.image.alt,
   };
 }
