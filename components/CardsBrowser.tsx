@@ -1,26 +1,30 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { CardTheme, PhotoCard } from "@/lib/cards";
+import type { PhotoCard } from "@/lib/cards";
 
-const STORAGE_KEY = "domus-aurea:card-selection";
-const ALL = "all";
+const STORAGE_KEY = "domus-aurea:card-pack";
+
+type Selection = Record<string, number>;
+
+function sumQuantities(s: Selection): number {
+  let n = 0;
+  for (const v of Object.values(s)) n += v;
+  return n;
+}
 
 export function CardsBrowser({
-  themes,
   cards,
   packSize,
   price,
   stripePaymentUrl,
 }: {
-  themes: CardTheme[];
   cards: PhotoCard[];
   packSize: number;
   price: string;
   stripePaymentUrl?: string;
 }) {
-  const [selection, setSelection] = useState<string[]>([]);
-  const [activeTheme, setActiveTheme] = useState<string>(ALL);
+  const [selection, setSelection] = useState<Selection>({});
   const [hydrated, setHydrated] = useState(false);
   const [showPanel, setShowPanel] = useState(false);
 
@@ -30,19 +34,26 @@ export function CardsBrowser({
     return m;
   }, [cards]);
 
-  // Rehydrate selection from localStorage, dropping any codes that no
-  // longer exist (e.g. a card was removed in Sanity after the user picked
-  // it). Also enforce the current packSize cap.
+  // Rehydrate from localStorage. Drop unknown codes (a card may have been
+  // removed in Sanity since the user picked it) and cap the running total
+  // at packSize in case packSize was lowered.
   useEffect(() => {
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-          const valid = parsed
-            .filter((v): v is string => typeof v === "string")
-            .filter((code) => cardsByCode.has(code))
-            .slice(0, packSize);
+        if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+          const valid: Selection = {};
+          let running = 0;
+          for (const [code, qty] of Object.entries(parsed)) {
+            if (typeof qty !== "number" || qty <= 0) continue;
+            if (!cardsByCode.has(code)) continue;
+            const room = packSize - running;
+            if (room <= 0) break;
+            const take = Math.min(qty, room);
+            valid[code] = take;
+            running += take;
+          }
           setSelection(valid);
         }
       }
@@ -57,135 +68,107 @@ export function CardsBrowser({
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(selection));
     } catch {
-      /* storage may be full or disabled — silently skip */
+      /* storage may be full or disabled */
     }
   }, [selection, hydrated]);
 
-  const toggle = (code: string) => {
-    setSelection((prev) => {
-      if (prev.includes(code)) return prev.filter((c) => c !== code);
-      if (prev.length >= packSize) return prev;
-      return [...prev, code];
+  const total = useMemo(() => sumQuantities(selection), [selection]);
+  const isComplete = total === packSize;
+  const remaining = Math.max(0, packSize - total);
+  const canAdd = total < packSize;
+
+  const increment = (code: string) =>
+    setSelection((s) => {
+      if (sumQuantities(s) >= packSize) return s;
+      return { ...s, [code]: (s[code] ?? 0) + 1 };
     });
-  };
 
-  const clear = () => setSelection([]);
+  const decrement = (code: string) =>
+    setSelection((s) => {
+      const cur = s[code] ?? 0;
+      if (cur <= 0) return s;
+      const next = { ...s };
+      if (cur === 1) delete next[code];
+      else next[code] = cur - 1;
+      return next;
+    });
 
-  const isComplete = selection.length === packSize;
-  const remaining = Math.max(0, packSize - selection.length);
+  const clear = () => setSelection({});
 
-  const visibleCards =
-    activeTheme === ALL
-      ? cards
-      : cards.filter((c) => c.themeSlug === activeTheme);
+  // Stripe Payment Links can't carry a structured cart. We append the
+  // selection as ?client_reference_id=CODE1xN,CODE2xN,... — that string
+  // shows up next to each order in the Stripe dashboard so Greg knows
+  // which photographs and quantities to print.
+  const refString = Object.entries(selection)
+    .filter(([, q]) => q > 0)
+    .map(([code, q]) => `${code}x${q}`)
+    .join(",");
 
-  const themeCounts = useMemo(() => {
-    const counts: Record<string, number> = {};
-    for (const c of cards) counts[c.themeSlug] = (counts[c.themeSlug] ?? 0) + 1;
-    return counts;
-  }, [cards]);
-
-  // Build the checkout URL. The Stripe Payment Link is fixed (one product
-  // for the whole pack); the customer's specific selection rides along in
-  // ?client_reference_id=CODE1,CODE2,... which shows up in the Stripe
-  // dashboard for the order so Greg knows which cards to print.
   const checkoutHref =
     isComplete && stripePaymentUrl
-      ? appendClientRef(stripePaymentUrl, selection.join(","))
+      ? appendClientRef(stripePaymentUrl, refString)
       : null;
 
-  const selectedCards = selection
-    .map((code) => cardsByCode.get(code))
-    .filter((c): c is PhotoCard => c !== undefined);
+  const selectionEntries = Object.entries(selection).filter(([, q]) => q > 0);
 
   return (
     <>
-      {/* Theme filter */}
-      <div className="mb-8 flex flex-wrap items-center justify-center gap-2">
-        <ThemePill
-          label="All"
-          count={cards.length}
-          active={activeTheme === ALL}
-          onClick={() => setActiveTheme(ALL)}
-        />
-        {themes.map((t) => {
-          const count = themeCounts[t.slug] ?? 0;
-          if (count === 0) return null;
+      <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+        {cards.map((card) => {
+          const qty = selection[card.code] ?? 0;
+          const selected = qty > 0;
           return (
-            <ThemePill
-              key={t.slug}
-              label={t.name}
-              count={count}
-              active={activeTheme === t.slug}
-              onClick={() => setActiveTheme(t.slug)}
-            />
-          );
-        })}
-      </div>
-
-      {/* Card grid */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-5 lg:grid-cols-4">
-        {visibleCards.map((card) => {
-          const selected = selection.includes(card.code);
-          const blocked = !selected && selection.length >= packSize;
-          return (
-            <button
+            <div
               key={card.code}
-              type="button"
-              onClick={() => toggle(card.code)}
-              disabled={blocked}
-              aria-pressed={selected}
-              aria-label={
-                selected
-                  ? `Remove ${card.title} from selection`
-                  : blocked
-                    ? `Selection full — remove a card to add ${card.title}`
-                    : `Add ${card.title} to selection`
-              }
               className={[
-                "group relative block aspect-square overflow-hidden border bg-stone/30 text-left transition",
+                "flex flex-col overflow-hidden border bg-parchment-light/60 transition",
                 selected
-                  ? "border-crimson ring-2 ring-crimson ring-offset-2 ring-offset-parchment"
+                  ? "border-crimson shadow-[0_0_0_1px_rgba(124,31,31,0.6)]"
                   : "border-stone/60 hover:border-gold",
-                blocked ? "cursor-not-allowed opacity-40" : "cursor-pointer",
               ].join(" ")}
             >
-              <img
-                src={card.imageUrl}
-                alt={card.imageAlt ?? card.title}
-                loading="lazy"
-                className="absolute inset-0 h-full w-full object-cover transition group-hover:scale-[1.02]"
-              />
-              {selected && (
-                <span
-                  aria-hidden
-                  className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-crimson font-display text-sm text-parchment-light shadow"
-                >
-                  &#10003;
-                </span>
-              )}
-              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/40 to-transparent p-3">
-                <span className="block font-display text-[11px] uppercase tracking-[0.16em] text-parchment-light">
-                  {card.title}
-                </span>
-                {card.themeName && (
-                  <span className="mt-0.5 block font-serif text-[11px] italic text-parchment/80">
-                    {card.themeName}
+              <div className="relative aspect-square bg-stone/30">
+                <img
+                  src={card.imageUrl}
+                  alt={card.imageAlt ?? card.title}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+                {selected && (
+                  <span
+                    aria-hidden
+                    className="absolute right-2 top-2 flex h-9 min-w-[2.25rem] items-center justify-center rounded-full bg-crimson px-2 font-display text-sm text-parchment-light shadow"
+                  >
+                    &times;{qty}
                   </span>
                 )}
-              </span>
-            </button>
+              </div>
+              <div className="flex flex-1 flex-col justify-between gap-3 p-3">
+                <p
+                  className="font-display text-[12px] uppercase leading-snug tracking-[0.16em] text-ink"
+                  title={card.title}
+                >
+                  {card.title}
+                </p>
+                <Stepper
+                  qty={qty}
+                  onIncrement={() => increment(card.code)}
+                  onDecrement={() => decrement(card.code)}
+                  canIncrement={canAdd}
+                  label={card.title}
+                />
+              </div>
+            </div>
           );
         })}
       </div>
 
-      {/* Expandable "your selection" panel */}
-      {showPanel && selectedCards.length > 0 && (
+      {showPanel && selectionEntries.length > 0 && (
         <div className="fixed inset-x-0 bottom-[88px] z-30 border-t border-stone/60 bg-parchment-light/95 backdrop-blur-md">
-          <div className="container-wide max-h-[40vh] overflow-y-auto py-5">
+          <div className="container-wide max-h-[45vh] overflow-y-auto py-5">
             <div className="mb-3 flex items-center justify-between">
               <p className="font-display text-xs uppercase tracking-[0.22em] text-ink-soft">
-                Your selection
+                Your pack
               </p>
               <button
                 type="button"
@@ -195,35 +178,46 @@ export function CardsBrowser({
                 Close
               </button>
             </div>
-            <ul className="grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8">
-              {selectedCards.map((card) => (
-                <li key={card.code} className="relative">
-                  <img
-                    src={card.imageUrl}
-                    alt={card.imageAlt ?? card.title}
-                    className="aspect-square w-full object-cover"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => toggle(card.code)}
-                    aria-label={`Remove ${card.title}`}
-                    className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-ink text-parchment-light hover:bg-crimson"
+            <ul className="space-y-2">
+              {selectionEntries.map(([code, qty]) => {
+                const card = cardsByCode.get(code);
+                if (!card) return null;
+                return (
+                  <li
+                    key={code}
+                    className="flex items-center gap-3 border border-stone/60 bg-parchment-light/80 p-2"
                   >
-                    &times;
-                  </button>
-                </li>
-              ))}
+                    <img
+                      src={card.imageUrl}
+                      alt={card.imageAlt ?? card.title}
+                      className="h-14 w-14 flex-none object-cover"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-display text-[12px] uppercase tracking-[0.16em] text-ink">
+                        {card.title}
+                      </p>
+                    </div>
+                    <Stepper
+                      qty={qty}
+                      onIncrement={() => increment(code)}
+                      onDecrement={() => decrement(code)}
+                      canIncrement={canAdd}
+                      label={card.title}
+                      compact
+                    />
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
       )}
 
-      {/* Sticky bottom bar */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-stone/60 bg-parchment-light/95 backdrop-blur-md shadow-[0_-8px_24px_-12px_rgba(31,24,18,0.30)]">
         <div className="container-wide flex flex-wrap items-center justify-between gap-3 py-4">
           <div>
             <p className="font-display text-sm uppercase tracking-[0.2em] text-ink">
-              {selection.length} / {packSize} selected
+              {total} / {packSize} in pack
             </p>
             <p className="font-serif text-xs italic text-ink-soft">
               {isComplete
@@ -231,12 +225,12 @@ export function CardsBrowser({
                   ? `${price} — ready to checkout`
                   : "Pack complete"
                 : remaining === 1
-                  ? "Pick 1 more"
-                  : `Pick ${remaining} more`}
+                  ? "Add 1 more"
+                  : `Add ${remaining} more`}
             </p>
           </div>
           <div className="flex items-center gap-3">
-            {selection.length > 0 && (
+            {total > 0 && (
               <button
                 type="button"
                 onClick={() => setShowPanel((v) => !v)}
@@ -245,7 +239,7 @@ export function CardsBrowser({
                 {showPanel ? "Hide" : "View"}
               </button>
             )}
-            {selection.length > 0 && (
+            {total > 0 && (
               <button
                 type="button"
                 onClick={clear}
@@ -265,12 +259,12 @@ export function CardsBrowser({
                 title={
                   !stripePaymentUrl
                     ? "Checkout not yet configured"
-                    : `Pick ${remaining} more`
+                    : `Add ${remaining} more`
                 }
               >
                 {!stripePaymentUrl
                   ? "Checkout coming soon"
-                  : `Pick ${remaining} more`}
+                  : `Add ${remaining} more`}
               </span>
             )}
           </div>
@@ -280,34 +274,50 @@ export function CardsBrowser({
   );
 }
 
-function ThemePill({
+function Stepper({
+  qty,
+  onIncrement,
+  onDecrement,
+  canIncrement,
   label,
-  count,
-  active,
-  onClick,
+  compact = false,
 }: {
+  qty: number;
+  onIncrement: () => void;
+  onDecrement: () => void;
+  canIncrement: boolean;
   label: string;
-  count: number;
-  active: boolean;
-  onClick: () => void;
+  compact?: boolean;
 }) {
+  const btnSize = compact ? "h-7 w-7 text-base" : "h-9 w-9 text-lg";
+  const num = compact ? "text-sm min-w-[1.25rem]" : "text-base min-w-[1.5rem]";
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={[
-        "rounded-full border px-4 py-1.5 font-display text-xs uppercase tracking-[0.18em] transition",
-        active
-          ? "border-crimson bg-crimson text-parchment-light"
-          : "border-stone/60 bg-parchment-light/60 text-ink-soft hover:border-gold hover:text-crimson",
-      ].join(" ")}
-    >
-      {label}
-      <span className={active ? "ml-2 opacity-80" : "ml-2 text-ink-soft/70"}>
-        {count}
+    <div className="flex items-center justify-between gap-2">
+      <button
+        type="button"
+        onClick={onDecrement}
+        disabled={qty === 0}
+        aria-label={`Remove one ${label}`}
+        className={`flex ${btnSize} items-center justify-center rounded-full border border-stone/60 font-display leading-none text-ink-soft transition enabled:hover:border-crimson enabled:hover:text-crimson disabled:opacity-30`}
+      >
+        &minus;
+      </button>
+      <span
+        className={`font-display ${num} text-center text-ink`}
+        aria-live="polite"
+      >
+        {qty}
       </span>
-    </button>
+      <button
+        type="button"
+        onClick={onIncrement}
+        disabled={!canIncrement}
+        aria-label={`Add one ${label}`}
+        className={`flex ${btnSize} items-center justify-center rounded-full border border-stone/60 font-display leading-none text-ink-soft transition enabled:hover:border-crimson enabled:hover:text-crimson disabled:opacity-30`}
+      >
+        &#43;
+      </button>
+    </div>
   );
 }
 

@@ -65,12 +65,6 @@ export const photoCard = defineType({
       ],
     }),
     defineField({
-      name: "theme",
-      type: "reference",
-      to: [{ type: "photoTheme" }],
-      validation: (r) => r.required(),
-    }),
-    defineField({
       name: "description",
       type: "text",
       rows: 2,
@@ -79,24 +73,20 @@ export const photoCard = defineType({
   ],
   orderings: [
     {
-      title: "Theme, then title",
-      name: "themeThenTitle",
-      by: [
-        { field: "theme.name", direction: "asc" },
-        { field: "title", direction: "asc" },
-      ],
+      title: "Title (A-Z)",
+      name: "titleAsc",
+      by: [{ field: "title", direction: "asc" }],
     },
   ],
   preview: {
     select: {
       title: "title",
       code: "code",
-      themeName: "theme.name",
       media: "image",
     },
-    prepare: ({ title, code, themeName, media }) => ({
+    prepare: ({ title, code, media }) => ({
       title,
-      subtitle: themeName ? `${themeName} - ${code}` : code,
+      subtitle: code,
       media,
     }),
   },

@@ -5,13 +5,13 @@ import { OrnamentDivider } from "@/components/Ornament";
 export const metadata = { title: "Photo Cards" };
 
 export default async function CardsPage() {
-  const { themes, cards, settings } = await getCardsPageData();
+  const { cards, settings } = await getCardsPageData();
 
   const packSize = settings?.packSize ?? 12;
   const price = settings?.price ?? "";
   const intro =
     settings?.intro?.trim() ||
-    `Hand-printed photographic cards from across Rome. Pick any ${packSize} for a single pack — mix sacred art, churches, statues, and street scenes as you please.`;
+    `Hand-printed photographic cards from across Rome. Build a pack of ${packSize} — choose any combination, as many of each photograph as you like.`;
 
   return (
     <>
@@ -33,7 +33,6 @@ export default async function CardsPage() {
           </p>
         ) : (
           <CardsBrowser
-            themes={themes}
             cards={cards}
             packSize={packSize}
             price={price}
