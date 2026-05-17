@@ -2,7 +2,14 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 import { OrnamentDivider } from "./Ornament";
 
+function splitWordmark(name: string): { prefix: string; tail: string } {
+  const idx = name.lastIndexOf(" ");
+  if (idx === -1) return { prefix: "", tail: name };
+  return { prefix: name.slice(0, idx), tail: name.slice(idx + 1) };
+}
+
 export function Footer() {
+  const { prefix, tail } = splitWordmark(site.name);
   return (
     <footer className="mt-32">
       <div className="container-wide pb-16">
@@ -10,7 +17,8 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
           <div>
             <p className="font-display text-lg uppercase tracking-[0.22em] text-ink">
-              {site.name}
+              {prefix ? <>{prefix} </> : null}
+              <span className="italy-flag">{tail}</span>
             </p>
             <p className="mt-3 max-w-xs font-serif text-sm italic text-ink-soft">
               {site.tagline}

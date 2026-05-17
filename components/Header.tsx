@@ -1,13 +1,24 @@
 import Link from "next/link";
 import { site } from "@/lib/site";
 
+// The site name is rendered as a wordmark with the final word ("Italy")
+// painted with the Italian flag stripes. We split on the last space so
+// metadata (page <title>) can keep using the plain `site.name` string.
+function splitWordmark(name: string): { prefix: string; tail: string } {
+  const idx = name.lastIndexOf(" ");
+  if (idx === -1) return { prefix: "", tail: name };
+  return { prefix: name.slice(0, idx), tail: name.slice(idx + 1) };
+}
+
 export function Header() {
+  const { prefix, tail } = splitWordmark(site.name);
   return (
     <header className="relative z-20">
       <div className="container-wide flex items-center justify-between pt-8 pb-6">
         <Link href="/" className="group flex items-baseline gap-3">
-          <span className="font-display text-2xl uppercase tracking-[0.22em] text-ink">
-            {site.name}
+          <span className="font-display text-[15px] uppercase tracking-[0.18em] text-ink sm:text-xl md:text-2xl md:tracking-[0.22em]">
+            {prefix ? <>{prefix} </> : null}
+            <span className="italy-flag">{tail}</span>
           </span>
           <span className="hidden h-3 w-px bg-gold/60 sm:block" />
           <span className="hidden font-serif text-sm italic text-ink-soft sm:block">

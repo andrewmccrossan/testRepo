@@ -108,4 +108,42 @@
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
+  /* "Italy" rendered as if the Italian flag were waving behind the
+     letters: three vertical stripes (green / off-white / red) painted
+     through the text via background-clip. The slight 100deg angle and
+     gentle drift animation give the cloth a sense of wind. A thin
+     ink-colored text-stroke keeps the white middle stripe legible
+     against the parchment background. */
+  .italy-flag {
+    background-image: linear-gradient(
+      100deg,
+      #008C45 0%,
+      #008C45 33%,
+      #F4F5F0 33%,
+      #F4F5F0 67%,
+      #CD212A 67%,
+      #CD212A 100%
+    );
+    background-size: 115% 100%;
+    background-position: 0% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 0.4px rgba(31, 24, 18, 0.5);
+    paint-order: stroke fill;
+    animation: italy-flag-drift 7s ease-in-out infinite;
+  }
+
+  @keyframes italy-flag-drift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 15% 50%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .italy-flag {
+      animation: none;
+    }
+  }
 }

@@ -8,7 +8,11 @@ import { NewsletterForm } from "@/components/NewsletterForm";
 
 export default async function HomePage() {
   const [books, posts] = await Promise.all([getBooks(), getPosts()]);
-  const featuredBook = books[0];
+  // Feature a specific book on the hero rather than whatever sorts to
+  // first by year. Falls back to the first book if the chosen slug is
+  // ever removed from Sanity.
+  const featuredBook =
+    books.find((b) => b.slug === "the-hours-of-the-aventine") ?? books[0];
   const recent = posts.slice(0, 2);
 
   return (
