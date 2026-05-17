@@ -88,11 +88,11 @@ export default async function HomePage() {
             cta="See the books"
           />
           <PillarCard
-            label="Journal"
+            label="Blog"
             title="Essays from the studio."
             body="Short writings on icons, Bernini, Aventine churches, and whatever else the week in Rome has offered."
             href="/blog"
-            cta="Read the journal"
+            cta="Read the blog"
           />
           <PillarCard
             label="Interactive"
@@ -104,11 +104,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Recent journal */}
+      {/* Recent posts */}
       <section className="container-wide py-20">
         <div className="mb-10 flex items-end justify-between">
           <div>
-            <p className="eyebrow">From the Journal</p>
+            <p className="eyebrow">From the Blog</p>
             <h2 className="mt-3 font-display text-4xl uppercase tracking-wide text-ink">
               Recent Writing
             </h2>

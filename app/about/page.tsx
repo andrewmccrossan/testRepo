@@ -20,7 +20,7 @@ export default function AboutPage() {
           {site.authorBlurb} I write slowly and travel cheaply, mostly in the
           old Roman quarters east of the Tiber, and occasionally in Ravenna,
           Sicily, and the smaller hill towns whose churches the guidebooks
-          ignore. The work that appears on this site &mdash; books, journal
+          ignore. The work that appears on this site &mdash; books, blog
           entries, the interactive manuscript &mdash; comes from a single
           rhythm: walk, look, read, walk again, write.
         </p>
@@ -31,7 +31,7 @@ export default function AboutPage() {
           For a long time I kept three separate accounts of the same project:
           a folder of essays, a list of half-finished books, and a notebook of
           interactive ideas I did not know how to publish. This site is the
-          attempt to put them in one room. The journal is where the thinking
+          attempt to put them in one room. The blog is where the thinking
           happens; the books are where the thinking finishes; the interactive
           chapters are an experiment in the space between the two.
         </p>
@@ -41,7 +41,7 @@ export default function AboutPage() {
         <p>
           Slowly. The essays are short and the chapters are long and neither is
           designed for a phone in a queue. If you have ten minutes, read a
-          journal entry. If you have an evening, open the interactive
+          blog entry. If you have an evening, open the interactive
           manuscript and bring a glass of something.
         </p>
 
@@ -67,7 +67,7 @@ export default function AboutPage() {
         <Link href="/blog" className="card p-6 text-center">
           <p className="eyebrow">Follow</p>
           <p className="mt-2 font-display text-lg uppercase tracking-wide text-ink">
-            The Journal
+            The Blog
           </p>
         </Link>
         <Link href="/interactive" className="card p-6 text-center">

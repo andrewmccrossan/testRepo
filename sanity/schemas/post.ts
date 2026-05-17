@@ -2,7 +2,7 @@ import { defineType, defineField } from "sanity";
 
 export const post = defineType({
   name: "post",
-  title: "Journal Post",
+  title: "Blog Post",
   type: "document",
   fields: [
     defineField({
@@ -50,10 +50,31 @@ export const post = defineType({
     defineField({
       name: "body",
       title: "Body",
+      description:
+        "Add as many text blocks and images as you like, in any order. Use the '+' button in the editor to insert an image between paragraphs.",
       type: "array",
       of: [
         { type: "block" },
-        { type: "image", options: { hotspot: true } },
+        {
+          type: "image",
+          options: { hotspot: true },
+          fields: [
+            defineField({
+              name: "alt",
+              title: "Alt text",
+              type: "string",
+              description:
+                "Short description for screen readers and SEO. Required for accessibility.",
+            }),
+            defineField({
+              name: "caption",
+              title: "Caption",
+              type: "string",
+              description:
+                "Optional italic caption shown directly under the image.",
+            }),
+          ],
+        },
       ],
     }),
   ],

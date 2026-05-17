@@ -4,7 +4,7 @@ A Next.js site for an author writing on Roman art and Catholic history. It serve
 
 - **Books** — a small shelf of published volumes with optional buy buttons (`/books`)
 - **Cards** — a mix-and-match shop for photographic greeting cards where customers build a pack of N from a catalog of photographs (any combination, any quantity per photo) (`/cards`)
-- **Journal** — a blog of essays and short writings (`/blog`)
+- **Blog** — essays and short writings (`/blog`)
 - **Interactive** — an in-progress book presented chapter by chapter as an interactive object (`/interactive`)
 
 ## Design
@@ -20,11 +20,11 @@ npm run dev
 
 Open <http://localhost:3000>.
 
-The site fetches its content (books and journal posts) from Sanity at build time. `npm run dev` will fetch live from the production dataset — no local content database needed.
+The site fetches its content (books and blog posts) from Sanity at build time. `npm run dev` will fetch live from the production dataset — no local content database needed.
 
 ## Content management
 
-Books and journal posts are managed in the **deployed Sanity Studio** at:
+Books and blog posts are managed in the **deployed Sanity Studio** at:
 
 👉 **<https://domus-aurea.sanity.studio>**
 
