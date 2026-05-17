@@ -47,8 +47,8 @@ function toCard(d: SanityCard): PhotoCard | null {
     title: d.title,
     description: d.description,
     imageUrl: urlForImage(d.image)
-      .width(800)
-      .height(640)
+      .width(900)
+      .height(600)
       .fit("crop")
       .auto("format")
       .url(),
