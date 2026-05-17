@@ -21,18 +21,18 @@ export default async function HomePage() {
       <section className="relative overflow-hidden">
         <div className="container-wide grid grid-cols-1 items-center gap-16 pt-16 pb-24 lg:grid-cols-[1.1fr,0.9fr]">
           <div className="relative">
-            <p className="eyebrow">An author&apos;s study in Rome</p>
+            <p className="eyebrow">Thirty years in Italy</p>
             <h1 className="mt-6 font-display text-5xl uppercase leading-[1.05] tracking-wide text-ink md:text-6xl lg:text-7xl">
-              The Eternal City,
+              Everything in Rome
               <span className="block italic text-crimson" style={{ fontStyle: "italic" }}>
-                read slowly.
+                overwhelmed me.
               </span>
             </h1>
             <p className="mt-6 max-w-xl font-serif text-xl leading-relaxed text-ink-soft">
-              Essays, books, and an unfolding interactive history on the art,
-              architecture, and Catholic memory of Rome &mdash; written for
-              readers who want to stand in front of a fresco for longer than
-              two minutes.
+              Thirty years of return trips, six books, and a million
+              photographs later &mdash; this is where I share, one site at a
+              time, what every visitor to Italy should know. Biased, detailed,
+              and accompanied by my own pictures.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <Link href="/books" className="btn-primary">
