@@ -110,14 +110,18 @@
   }
 
   /* "Italy" rendered as if the Italian flag were waving behind the
-     letters: three vertical stripes (green / off-white / red) painted
-     through the text via background-clip. The slight 100deg angle and
-     gentle drift animation give the cloth a sense of wind. A thin
-     ink-colored text-stroke keeps the white middle stripe legible
-     against the parchment background. */
+     letters: three stripes (green / off-white / red) painted through
+     the text via background-clip. The 115deg angle tilts the stripes
+     enough that the green->white and white->red boundaries cross
+     through individual letters rather than aligning with the gaps
+     between them - so the flag reads as one continuous pattern, not
+     as letters that happen to be different colors. The background-
+     size > 100% plus the position animation gives the stripes a
+     gentle drift to suggest wind. A thin ink text-stroke keeps the
+     white middle stripe legible against the parchment background. */
   .italy-flag {
     background-image: linear-gradient(
-      100deg,
+      115deg,
       #008C45 0%,
       #008C45 33%,
       #F4F5F0 33%,
@@ -125,25 +129,26 @@
       #CD212A 67%,
       #CD212A 100%
     );
-    background-size: 115% 100%;
+    background-size: 125% 100%;
     background-position: 0% 50%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
-    -webkit-text-stroke: 0.4px rgba(31, 24, 18, 0.5);
+    -webkit-text-stroke: 0.5px rgba(31, 24, 18, 0.55);
     paint-order: stroke fill;
-    animation: italy-flag-drift 7s ease-in-out infinite;
+    animation: italy-flag-drift 6s ease-in-out infinite;
   }
 
   @keyframes italy-flag-drift {
     0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 15% 50%; }
+    50% { background-position: 100% 50%; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .italy-flag {
       animation: none;
+      background-position: 50% 50%;
     }
   }
 }
