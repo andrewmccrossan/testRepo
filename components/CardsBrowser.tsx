@@ -163,57 +163,61 @@ export function CardsBrowser({
         })}
       </div>
 
-      {showPanel && selectionEntries.length > 0 && (
-        <div className="fixed inset-x-0 bottom-[88px] z-30 border-t border-stone/60 bg-parchment-light/95 backdrop-blur-md">
-          <div className="container-wide max-h-[45vh] overflow-y-auto py-5">
-            <div className="mb-3 flex items-center justify-between">
-              <p className="font-display text-xs uppercase tracking-[0.22em] text-ink-soft">
-                Your pack
-              </p>
-              <button
-                type="button"
-                onClick={() => setShowPanel(false)}
-                className="font-display text-xs uppercase tracking-[0.22em] text-ink-soft hover:text-crimson"
-              >
-                Close
-              </button>
+      {/* One fixed container holds the optional "Your pack" panel stacked
+          on top of the always-visible status bar. Nesting them avoids any
+          hardcoded offset between the two — the panel can grow and the
+          bar can wrap without colliding. */}
+      <div className="fixed inset-x-0 bottom-0 z-40 flex flex-col border-t border-stone/60 bg-parchment-light/95 backdrop-blur-md shadow-[0_-8px_24px_-12px_rgba(31,24,18,0.30)]">
+        {showPanel && selectionEntries.length > 0 && (
+          <div className="max-h-[40vh] overflow-y-auto border-b border-stone/40">
+            <div className="container-wide py-5">
+              <div className="mb-3 flex items-center justify-between">
+                <p className="font-display text-xs uppercase tracking-[0.22em] text-ink-soft">
+                  Your pack
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShowPanel(false)}
+                  className="font-display text-xs uppercase tracking-[0.22em] text-ink-soft hover:text-crimson"
+                >
+                  Close
+                </button>
+              </div>
+              <ul className="space-y-2">
+                {selectionEntries.map(([code, qty]) => {
+                  const card = cardsByCode.get(code);
+                  if (!card) return null;
+                  return (
+                    <li
+                      key={code}
+                      className="flex items-center gap-3 border border-stone/60 bg-parchment-light/80 p-2"
+                    >
+                      <img
+                        src={card.imageUrl}
+                        alt={card.imageAlt ?? card.title}
+                        className="h-14 w-14 flex-none object-cover"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-display text-[12px] uppercase tracking-[0.16em] text-ink">
+                          {card.title}
+                        </p>
+                      </div>
+                      <Stepper
+                        qty={qty}
+                        onIncrement={() => increment(code)}
+                        onDecrement={() => decrement(code)}
+                        canIncrement={canAdd}
+                        label={card.title}
+                        compact
+                      />
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
-            <ul className="space-y-2">
-              {selectionEntries.map(([code, qty]) => {
-                const card = cardsByCode.get(code);
-                if (!card) return null;
-                return (
-                  <li
-                    key={code}
-                    className="flex items-center gap-3 border border-stone/60 bg-parchment-light/80 p-2"
-                  >
-                    <img
-                      src={card.imageUrl}
-                      alt={card.imageAlt ?? card.title}
-                      className="h-14 w-14 flex-none object-cover"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate font-display text-[12px] uppercase tracking-[0.16em] text-ink">
-                        {card.title}
-                      </p>
-                    </div>
-                    <Stepper
-                      qty={qty}
-                      onIncrement={() => increment(code)}
-                      onDecrement={() => decrement(code)}
-                      canIncrement={canAdd}
-                      label={card.title}
-                      compact
-                    />
-                  </li>
-                );
-              })}
-            </ul>
           </div>
-        </div>
-      )}
+        )}
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-stone/60 bg-parchment-light/95 backdrop-blur-md shadow-[0_-8px_24px_-12px_rgba(31,24,18,0.30)]">
         <div className="container-wide flex flex-wrap items-center justify-between gap-3 py-4">
           <div>
             <p className="font-display text-sm uppercase tracking-[0.2em] text-ink">
