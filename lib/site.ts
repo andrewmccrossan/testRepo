@@ -1,5 +1,5 @@
 export const site = {
-  name: "Greg Pulles's Italy",
+  name: "Italy by Greg Pulles",
   tagline: "Studies in Roman Art, Faith, and the Long Memory of the West",
   author: "A. M. Caelius",
   authorBlurb:

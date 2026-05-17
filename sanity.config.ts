@@ -5,7 +5,7 @@ import { schemaTypes } from "./sanity/schemas";
 
 export default defineConfig({
   name: "domus",
-  title: "Greg Pulles's Italy",
+  title: "Italy by Greg Pulles",
   projectId: "34m6fz10",
   dataset: "production",
   plugins: [structureTool(), visionTool()],

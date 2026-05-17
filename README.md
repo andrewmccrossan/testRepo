@@ -1,4 +1,4 @@
-# Greg Pulles's Italy
+# Italy by Greg Pulles
 
 A Next.js site for an author writing on Roman art and Catholic history. It serves three purposes:
 
