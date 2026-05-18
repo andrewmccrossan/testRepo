@@ -36,8 +36,8 @@ export default async function HomePage() {
               <Link href="/books" className="btn-primary">
                 Browse the Books
               </Link>
-              <Link href="/interactive" className="btn-ghost">
-                Enter the Interactive
+              <Link href="/blog" className="btn-ghost">
+                Read the Blog
               </Link>
             </div>
 
@@ -81,7 +81,7 @@ export default async function HomePage() {
 
       {/* Three pillars */}
       <section className="container-wide py-16">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           <PillarCard
             label="Books"
             title="A small library, carefully made."
@@ -95,13 +95,6 @@ export default async function HomePage() {
             body="Short writings on icons, Bernini, Aventine churches, and whatever else the week in Rome has offered."
             href="/blog"
             cta="Read the blog"
-          />
-          <PillarCard
-            label="Interactive"
-            title="A book that reads back."
-            body="An in-progress work, presented chapter by chapter as an interactive object &mdash; with maps, footnotes, and the occasional surprise."
-            href="/interactive"
-            cta="Open the manuscript"
           />
         </div>
       </section>

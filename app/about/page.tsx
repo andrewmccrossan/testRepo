@@ -57,7 +57,7 @@ export default function AboutPage() {
 
       <OrnamentDivider className="mt-16" />
 
-      <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
+      <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
         <Link href="/books" className="card p-6 text-center">
           <p className="eyebrow">Read</p>
           <p className="mt-2 font-display text-lg uppercase tracking-wide text-ink">
@@ -68,12 +68,6 @@ export default function AboutPage() {
           <p className="eyebrow">Follow</p>
           <p className="mt-2 font-display text-lg uppercase tracking-wide text-ink">
             The Blog
-          </p>
-        </Link>
-        <Link href="/interactive" className="card p-6 text-center">
-          <p className="eyebrow">Explore</p>
-          <p className="mt-2 font-display text-lg uppercase tracking-wide text-ink">
-            The Manuscript
           </p>
         </Link>
       </div>

@@ -5,7 +5,8 @@ A Next.js site for an author writing on Roman art and Catholic history. It serve
 - **Books** — a small shelf of published volumes with optional buy buttons (`/books`)
 - **Cards** — a mix-and-match shop for photographic greeting cards where customers build a pack of N from a catalog of photographs (any combination, any quantity per photo) (`/cards`)
 - **Blog** — essays and short writings (`/blog`)
-- **Interactive** — an in-progress book presented chapter by chapter as an interactive object (`/interactive`)
+
+> The `/interactive` route is currently hidden from the nav and home page but the code under `app/interactive/` is left in place so it can be reinstated by adding the entry back to `site.nav` in `lib/site.ts` (plus the home pillar card and About page link).
 
 ## Design
 

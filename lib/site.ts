@@ -10,7 +10,6 @@ export const site = {
     { href: "/books", label: "Books" },
     { href: "/cards", label: "Cards" },
     { href: "/blog", label: "Blog" },
-    { href: "/interactive", label: "Interactive" },
     { href: "/about", label: "About" },
   ],
 };
