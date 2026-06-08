@@ -72,6 +72,7 @@ The schema for posts and books lives in `sanity/schemas/`. After editing a schem
 - **Interactive chapter list:** `app/interactive/page.tsx`
 - **Sample chapter prose:** `app/interactive/chapter-1/page.tsx`
 - **Color palette and fonts:** `tailwind.config.ts` and `app/layout.tsx`
+- **Stripe setup guide (hidden page):** `public/stripe-setup-instructions/index.html` — a standalone HTML doc served at `/stripe-setup-instructions` (not linked in nav). It's a plain file in `public/`, so it bypasses the Next layout/theme and keeps its own print-friendly styling. Edit the file directly; changes ship on the next deploy.
 
 ## Book images
 
