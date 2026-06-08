@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Setting Up Stripe — Italy by Greg Pulles</title>
+<style>
+  :root {
+    --ink: #1f1812;
+    --soft: #3a2e25;
+    --crimson: #7c1f1f;
+    --gold: #8a6c26;
+    --green: #008c45;
+    --parch: #fbf6e8;
+    --parch2: #f5eedc;
+    --line: #d8cdb0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--parch2);
+    color: var(--ink);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 0 22px 80px; }
+  header.band {
+    background: var(--ink);
+    color: var(--parch);
+    padding: 30px 22px;
+    text-align: center;
+  }
+  header.band .brand {
+    font-size: 14px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #d4b25a;
+  }
+  header.band .brand .it-g { color: var(--green); }
+  header.band .brand .it-w { color: #f4f5f0; }
+  header.band .brand .it-r { color: #cd212a; }
+  header.band h1 {
+    margin: 12px 0 4px;
+    font-size: 30px;
+    letter-spacing: 0.02em;
+  }
+  header.band p { margin: 0; color: #cbbfa6; font-style: italic; }
+
+  h2 {
+    color: var(--crimson);
+    font-size: 25px;
+    margin: 46px 0 6px;
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 6px;
+  }
+  h3 { font-size: 20px; margin: 26px 0 6px; color: var(--soft); }
+  p { margin: 10px 0; }
+  a { color: var(--crimson); }
+  code {
+    background: #efe6cd;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: "Courier New", monospace;
+    font-size: 0.92em;
+    word-break: break-all;
+  }
+  ol.steps { margin: 12px 0; padding-left: 0; counter-reset: step; list-style: none; }
+  ol.steps > li {
+    position: relative;
+    margin: 0 0 16px;
+    padding: 2px 0 2px 52px;
+    min-height: 36px;
+  }
+  ol.steps > li::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 0;
+    width: 36px; height: 36px;
+    background: var(--crimson);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: Georgia, serif;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .callout {
+    border-left: 5px solid var(--gold);
+    background: var(--parch);
+    padding: 14px 18px;
+    margin: 18px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .callout.warn { border-left-color: var(--crimson); }
+  .callout.warn strong { color: var(--crimson); }
+  .callout .tag {
+    display: inline-block;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .callout.warn .tag { color: var(--crimson); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    background: #fff;
+  }
+  th, td {
+    border: 1px solid var(--line);
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: var(--parch); font-size: 15px; letter-spacing: 0.04em; }
+  td.fill { background: #fffdf6; min-width: 120px; }
+  .muted { color: var(--soft); font-style: italic; }
+  .big-goal {
+    background: var(--ink);
+    color: var(--parch);
+    padding: 20px 22px;
+    border-radius: 6px;
+    margin: 24px 0;
+  }
+  .big-goal h2 { color: #d4b25a; border: none; margin: 0 0 8px; }
+  .pill {
+    display: inline-block;
+    background: var(--green);
+    color: #fff;
+    font-size: 13px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  hr { border: none; border-top: 1px solid var(--line); margin: 40px 0; }
+  .toc { background: var(--parch); padding: 14px 22px; border-radius: 6px; }
+  .toc a { text-decoration: none; }
+  footer.foot { text-align: center; color: var(--soft); font-style: italic; margin-top: 50px; }
+  @media print {
+    body { background: #fff; font-size: 12.5pt; }
+    header.band { background: #fff !important; color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .big-goal { background: #fff; color: #000; border: 2px solid #000; }
+    ol.steps > li::before { background: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    h2 { break-after: avoid; }
+    .callout, table { break-inside: avoid; }
+    a { color: #000; }
+  }
+</style>
+</head>
+<body>
+
+<header class="band">
+  <div class="brand"><span class="it-g">I</span><span class="it-w">TAL</span><span class="it-r">Y</span> &nbsp;BY GREG PULLES</div>
+  <h1>Setting Up Stripe to Sell Your Books &amp; Cards</h1>
+  <p>A step-by-step guide — no technical knowledge needed</p>
+</header>
+
+<div class="wrap">
+
+  <div class="big-goal">
+    <h2>What we're doing, and what I need at the end</h2>
+    <p>
+      <strong>Stripe</strong> is the service that will collect payments from your
+      customers and deposit the money into your bank account. By the end of this
+      guide you'll have created one <strong>payment link</strong> (a web address)
+      for each book you want to sell, plus <strong>one</strong> payment link for
+      your greeting-card pack.
+    </p>
+    <p style="margin-bottom:0;">
+      <span class="pill">All I need from you</span> &nbsp; Copy each of those links
+      into the table at the end and send them back to me. I'll connect them to the
+      website &mdash; you won't have to touch any code.
+    </p>
+  </div>
+
+  <p class="muted">
+    Set aside about 30&ndash;45 minutes. You can stop partway and pick up later;
+    Stripe saves your progress. Everything here assumes you're in the United States
+    and selling in US dollars &mdash; tell me if that's not the case and I'll adjust.
+  </p>
+
+  <div class="toc">
+    <strong>The four parts</strong>
+    <ol style="margin:8px 0 0;">
+      <li><a href="#part1">Create your Stripe account</a></li>
+      <li><a href="#part2">A few settings before you start</a></li>
+      <li><a href="#part3">Add your books &mdash; one link each</a></li>
+      <li><a href="#part4">Add your greeting cards &mdash; ONE link for the whole pack</a></li>
+      <li><a href="#part5">Send me the links</a> &middot; <a href="#faq">Common questions</a></li>
+    </ol>
+  </div>
+
+  <!-- PART 1 -->
+  <h2 id="part1">Part 1 &middot; Create your Stripe account</h2>
+  <p>This is a one-time setup. Stripe is a large, regulated payments company (the
+  same one used by thousands of small businesses), so it will ask you to verify
+  who you are and where to send your money.</p>
+
+  <ol class="steps">
+    <li>
+      In your web browser, go to <a href="https://stripe.com">stripe.com</a> and
+      click <strong>Sign in</strong> (top right), then <strong>Create account</strong>.
+    </li>
+    <li>
+      Enter your <strong>email address</strong>, your <strong>full name</strong>,
+      and a <strong>password</strong> you'll remember. Choose
+      <strong>United States</strong> as the country. Click to create the account.
+    </li>
+    <li>
+      Stripe sends you a <strong>confirmation email</strong>. Open it and click the
+      link inside to verify your email address.
+    </li>
+    <li>
+      Now you'll <strong>activate</strong> the account so it can take real payments.
+      Stripe will ask you for:
+      <ul>
+        <li>Your <strong>legal name, home address, and date of birth</strong></li>
+        <li>The <strong>last four digits of your Social Security Number</strong>
+            (used only to confirm your identity)</li>
+        <li>A short <strong>description of what you sell</strong> &mdash; you can
+            write: &ldquo;Photography books and greeting cards about the art and
+            churches of Italy.&rdquo;</li>
+        <li>Your <strong>bank account and routing number</strong>, so Stripe can
+            deposit your sales</li>
+      </ul>
+      When it asks whether you're a <strong>business</strong> or an
+      <strong>individual</strong>, choosing <strong>Individual</strong> is the
+      simplest option for an author selling their own work.
+    </li>
+    <li>
+      It may ask for a <strong>statement descriptor</strong> &mdash; this is the
+      short name that appears on your customer's credit-card bill. Set it to
+      something they'll recognize, like <code>ITALYBYGREGPULLES</code> or
+      <code>GREG PULLES BOOKS</code>.
+    </li>
+  </ol>
+
+  <div class="callout">
+    <span class="tag">Good to know</span>
+    Stripe doesn't charge a monthly fee. It takes a small cut of each sale &mdash;
+    about <strong>2.9% plus 30&cent;</strong> per transaction in the US (so on a
+    $30 order, roughly $1.17). You keep the rest. There's nothing to pay up front.
+  </div>
+
+  <!-- PART 2 -->
+  <h2 id="part2">Part 2 &middot; A few settings before you start</h2>
+
+  <h3>Make sure you're in "live" mode, not "test" mode</h3>
+  <p>
+    Stripe has a practice area called <strong>Test mode</strong>. Links made there
+    can't take real money. Look for a <strong>Test mode</strong> switch near the top
+    right of the dashboard and make sure it is turned <strong>OFF</strong> before you
+    create your final links. (If you'd like to do a practice run first, you're
+    welcome to &mdash; just remember the real links must be made with Test mode off.)
+  </p>
+
+  <div class="callout warn">
+    <span class="tag">If you get stuck here</span>
+    <strong>If Stripe says your account isn't fully activated yet</strong>, finish
+    the activation questions from Part 1 first. Real payment links only work once
+    Stripe has approved your account. This can take a few minutes to a day.
+  </div>
+
+  <!-- PART 3 -->
+  <h2 id="part3">Part 3 &middot; Add your books &mdash; one link each</h2>
+  <p>
+    You'll repeat these steps once <em>per book</em> you want to sell directly. Each
+    book gets its own link.
+  </p>
+
+  <ol class="steps">
+    <li>
+      In the menu on the left, click <strong>Payment links</strong>. If you don't
+      see it, type <strong>&ldquo;Payment links&rdquo;</strong> into the search box
+      at the very top of the page and choose it.
+    </li>
+    <li>
+      Click <strong>Create payment link</strong> (or the <strong>+ New</strong>
+      button). Choose <strong>Products</strong> when asked what kind of link.
+    </li>
+    <li>
+      Click <strong>+ Add a product</strong> and fill in:
+      <ul>
+        <li><strong>Name</strong> &mdash; the book's title, e.g.
+            <em>Sacred Places: Rediscovering the Churches of Rome</em></li>
+        <li><strong>Price</strong> &mdash; what you want to charge (e.g.
+            <code>75.00</code>)</li>
+        <li><strong>Image</strong> (optional) &mdash; upload a photo of the cover so
+            customers see it at checkout</li>
+      </ul>
+      Make sure it's a <strong>one-time</strong> payment (not a subscription).
+    </li>
+    <li>
+      Because books are shipped, you must collect the buyer's address. Open the
+      <strong>Options</strong> (sometimes under &ldquo;More options&rdquo; or a
+      &ldquo;Shipping&rdquo; / &ldquo;Collect addresses&rdquo; section) and turn
+      <strong>Collect shipping address</strong> to <strong>ON</strong>.
+    </li>
+    <li>
+      <em>(Optional)</em> If you want to charge for shipping, add a
+      <strong>shipping rate</strong> (a flat amount like <code>6.00</code>).
+      Otherwise you can simply build shipping into the price.
+    </li>
+    <li>
+      Click <strong>Create link</strong>. Stripe shows you a web address that starts
+      with <code>https://buy.stripe.com/</code>. Click <strong>Copy</strong>.
+    </li>
+    <li>
+      Paste that link into the <a href="#part5">books table at the end</a> next to
+      the matching title. Then repeat from step&nbsp;2 for your next book.
+    </li>
+  </ol>
+
+  <div class="callout">
+    <span class="tag">Tip</span>
+    You don't have to sell every book through the website. Make a link only for the
+    ones you want customers to buy direct. (You can still list the others with an
+    &ldquo;Available on Amazon&rdquo; link &mdash; just tell me which.)
+  </div>
+
+  <!-- PART 4 -->
+  <h2 id="part4">Part 4 &middot; Add your greeting cards &mdash; ONE link for the whole pack</h2>
+
+  <div class="callout warn">
+    <span class="tag">The most important point in this guide</span>
+    <strong>Do NOT make a separate link for each card.</strong> Customers build a
+    pack of <strong>12</strong> on the website by choosing from your photos. Stripe
+    only needs <strong>one</strong> product &mdash; &ldquo;a pack of 12 cards&rdquo;
+    &mdash; at one price. The website remembers which 12 they picked and passes that
+    along automatically.
+  </div>
+
+  <ol class="steps">
+    <li>
+      Click <strong>Payment links</strong> &rarr; <strong>Create payment link</strong>
+      &rarr; <strong>Products</strong>, just like before.
+    </li>
+    <li>
+      Add <strong>one product</strong>:
+      <ul>
+        <li><strong>Name:</strong> <em>Photographic Greeting Cards &mdash; Pack of 12</em></li>
+        <li><strong>Price:</strong> the price for a full pack of 12 (e.g.
+            <code>30.00</code>)</li>
+        <li><strong>Image</strong> (optional): a photo showing a few sample cards</li>
+      </ul>
+    </li>
+    <li>
+      Turn <strong>Collect shipping address</strong> to <strong>ON</strong> (the
+      cards are mailed), exactly as you did for the books.
+    </li>
+    <li>
+      If there's an option about letting the customer <strong>adjust the
+      quantity</strong>, leave it <strong>OFF</strong> / set to 1. (One link = one
+      pack of 12. A customer who wants two packs can simply check out twice.)
+    </li>
+    <li>
+      Click <strong>Create link</strong>, then <strong>Copy</strong> the
+      <code>https://buy.stripe.com/</code> address and paste it into the
+      <a href="#part5">cards row</a> of the table at the end.
+    </li>
+  </ol>
+
+  <h3>How you'll know which photos to print</h3>
+  <p>
+    When a card order comes in, it carries a short list of codes for the 12 photos
+    the customer chose &mdash; something like
+    <code>FOUNTAIN1&times;5, STATUE1&times;7</code> &mdash; meaning 5 of one photo
+    and 7 of another. <strong>You don't need to memorize or decode anything.</strong>
+    For your first few orders, just forward me the order and I'll tell you exactly
+    which photographs to print, and I'll show you where that list appears in your
+    Stripe dashboard so you can read it yourself going forward.
+  </p>
+
+  <!-- PART 5 -->
+  <hr />
+  <h2 id="part5">Part 5 &middot; Send me the links</h2>
+  <p>
+    Fill in a row for each link you created and send the whole table back to me
+    (an email, a photo of this page, or just the pasted links is fine). That's the
+    finish line &mdash; I'll handle the rest.
+  </p>
+
+  <h3>Your books</h3>
+  <table>
+    <thead>
+      <tr><th style="width:42%;">Book title</th><th style="width:16%;">Price</th><th>Payment link (starts with buy.stripe.com)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="fill">&nbsp;</td><td class="fill">&nbsp;</td><td class="fill">&nbsp;</td></tr>
+      <tr><td class="fill">&nbsp;</td><td class="fill">&nbsp;</td><td class="fill">&nbsp;</td></tr>
+      <tr><td class="fill">&nbsp;</td><td class="fill">&nbsp;</td><td class="fill">&nbsp;</td></tr>
+      <tr><td class="fill">&nbsp;</td><td class="fill">&nbsp;</td><td class="fill">&nbsp;</td></tr>
+      <tr><td class="fill">&nbsp;</td><td class="fill">&nbsp;</td><td class="fill">&nbsp;</td></tr>
+      <tr><td class="fill">&nbsp;</td><td class="fill">&nbsp;</td><td class="fill">&nbsp;</td></tr>
+    </tbody>
+  </table>
+  <p class="muted">
+    Your titles, for reference: Sacred Places (the large book); Sacred Places &mdash;
+    the Complete Guide; The Holy Pulpits of Tuscany; Due Cento Luoghi; Francesco
+    Borromini, the Complete Guide; The Fountains of Rome.
+  </p>
+
+  <h3>Your greeting cards (one link only)</h3>
+  <table>
+    <thead>
+      <tr><th style="width:42%;">Product</th><th style="width:16%;">Pack price</th><th>Payment link (starts with buy.stripe.com)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Photographic Greeting Cards &mdash; Pack of 12</td><td class="fill">&nbsp;</td><td class="fill">&nbsp;</td></tr>
+    </tbody>
+  </table>
+
+  <!-- FAQ -->
+  <hr />
+  <h2 id="faq">Common questions</h2>
+
+  <h3>Where do I see my orders?</h3>
+  <p>In the Stripe dashboard, click <strong>Payments</strong> in the left menu. Every
+  sale appears there with the customer's name, what they bought, and their shipping
+  address.</p>
+
+  <h3>When do I get paid?</h3>
+  <p>Stripe deposits your sales into your bank account automatically. The first
+  deposit usually takes about a week while Stripe verifies everything; after that,
+  money arrives every couple of business days.</p>
+
+  <h3>Can I change a price later?</h3>
+  <p>Yes. You can edit a product's price in Stripe at any time &mdash; the same link
+  keeps working. If you change the <em>card pack</em> price, just let me know so I can
+  update the price shown on the website to match.</p>
+
+  <h3>What about sales tax?</h3>
+  <p>Stripe offers an optional feature called <strong>Stripe Tax</strong> that can
+  calculate it for you. It's not required to get started &mdash; we can turn it on
+  later if you'd like. Bring it up with me and we'll decide together.</p>
+
+  <h3>What if a customer wants a refund?</h3>
+  <p>You can refund any payment with a couple of clicks from the
+  <strong>Payments</strong> page in Stripe. The fee is returned to you on refunds.</p>
+
+  <h3>I'm stuck on a step.</h3>
+  <p>Stop where you are and send me a screenshot of what you're seeing. Don't guess
+  &mdash; it's easier for me to point you to the right button than to undo a wrong
+  turn.</p>
+
+  <footer class="foot">
+    Italy by Greg Pulles &middot; Stripe setup guide
+  </footer>
+
+</div>
+</body>
+</html>
