@@ -28,7 +28,7 @@ export const cardSettings = defineType({
       name: "stripePaymentUrl",
       type: "url",
       description:
-        "Stripe Payment Link for the single 'Pack of N cards' product. The customer's selection is appended as ?client_reference_id=CODE1,CODE2,... which appears next to the order in the Stripe dashboard. Leave blank to disable checkout (UI will show 'Coming soon').",
+        "Stripe Payment Link for the single 'Pack of N cards' product. The customer's selection is appended as ?client_reference_id=CODE1xN_CODE2xN_... which appears next to the order in the Stripe dashboard. Leave blank to disable checkout (UI will show 'Coming soon').",
     }),
     defineField({
       name: "intro",

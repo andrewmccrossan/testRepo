@@ -96,13 +96,16 @@ export function CardsBrowser({
   const clear = () => setSelection({});
 
   // Stripe Payment Links can't carry a structured cart. We append the
-  // selection as ?client_reference_id=CODE1xN,CODE2xN,... — that string
+  // selection as ?client_reference_id=CODE1xN_CODE2xN_... — that string
   // shows up next to each order in the Stripe dashboard so Greg knows
-  // which photographs and quantities to print.
+  // which photographs and quantities to print. Stripe restricts
+  // client_reference_id to [A-Za-z0-9_-], so entries are joined with "_"
+  // (not commas, which Stripe rejects). Card codes are [A-Z0-9] and the
+  // "x" quantity separator is alphanumeric, so the whole string is safe.
   const refString = Object.entries(selection)
     .filter(([, q]) => q > 0)
     .map(([code, q]) => `${code}x${q}`)
-    .join(",");
+    .join("_");
 
   const checkoutHref =
     isComplete && stripePaymentUrl

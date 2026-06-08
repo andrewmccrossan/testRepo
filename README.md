@@ -105,7 +105,7 @@ The cards shop is a **mix-and-match cart**: the customer browses a flat catalog 
 
 Create **one** Stripe product priced at the pack price (e.g. "Roman Photographic Greeting Cards — Pack of 12, $30"). Generate a Payment Link for it. Paste that URL into `stripePaymentUrl` in the Card Pack Settings doc.
 
-When a customer clicks Checkout, the site appends `?client_reference_id=CODE1xN,CODE2xN,...` where each entry is `<code>x<quantity>`. For a pack of 12 with 5 of one photo and 7 of another, the reference reads `ABC123x5,DEF456x7`. In the Stripe dashboard, look up each code in the Studio (Photographic Greeting Card → search by code) to know what to print and how many.
+When a customer clicks Checkout, the site appends `?client_reference_id=CODE1xN_CODE2xN_...` where each entry is `<code>x<quantity>`. For a pack of 12 with 5 of one photo and 7 of another, the reference reads `ABC123x5_DEF456x7`. Entries are joined with `_` (underscore), not commas — Stripe restricts `client_reference_id` to `[A-Za-z0-9_-]` and silently drops values containing other characters. In the Stripe dashboard, look up each code in the Studio (Photographic Greeting Card → search by code) to know what to print and how many.
 
 **Limitation**: the customer sees a generic "Pack of 12 $30" on the Stripe checkout page, not their itemized selection (they did just see it on our site before clicking through). If a richer checkout is needed later, the upgrade path is a serverless function that creates Stripe Checkout Sessions with one line item per photo.
 
