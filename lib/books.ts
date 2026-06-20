@@ -88,25 +88,13 @@ function toBook(d: SanityBook): Book {
   return book;
 }
 
-// Hardcoded slug pinned to the end of the books list. The GROQ query
-// sorts by year descending, but the author wants "Stones of the Seven
-// Hills" last regardless of its year. If we need a richer ordering
-// later, promote this to a `sortOrder` number field on the book schema.
-const LAST_BOOK_SLUG = "stones-of-the-seven-hills";
-
 export async function getBooks(): Promise<Book[]> {
   const docs = await sanityClient.fetch<SanityBook[]>(
     BOOKS_QUERY,
     {},
     SANITY_FETCH_OPTIONS,
   );
-  const books = docs.map(toBook);
-  const idx = books.findIndex((b) => b.slug === LAST_BOOK_SLUG);
-  if (idx !== -1) {
-    const [pinned] = books.splice(idx, 1);
-    books.push(pinned);
-  }
-  return books;
+  return docs.map(toBook);
 }
 
 export async function getBook(slug: string): Promise<Book | undefined> {
