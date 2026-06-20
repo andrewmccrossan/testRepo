@@ -8,7 +8,12 @@ export function BookCard({ book }: { book: Book }) {
       href={`/books/${book.slug}`}
       className="card group flex flex-col items-center p-8 text-center"
     >
-      <BookCover book={book} size="md" />
+      {/* This one cover reads better a touch smaller next to its neighbour. */}
+      <BookCover
+        book={book}
+        size="md"
+        scale={book.slug === "epic-journey-book" ? 0.75 : 1}
+      />
       <p className="eyebrow mt-6">{book.year}</p>
       <h3 className="mt-2 font-display text-2xl uppercase tracking-wide text-ink">
         {book.title}

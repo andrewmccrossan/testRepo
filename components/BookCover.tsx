@@ -2,33 +2,41 @@ import { MotifByName } from "./Ornament";
 import type { Book } from "@/lib/books";
 import { urlForImage } from "@/lib/sanity/image";
 
-export function BookCover({ book, size = "md" }: { book: Book; size?: "sm" | "md" | "lg" }) {
-  const dims =
+export function BookCover({
+  book,
+  size = "md",
+  scale = 1,
+}: {
+  book: Book;
+  size?: "sm" | "md" | "lg";
+  scale?: number;
+}) {
+  // Base cover box in rem per size. Covers are sized by HEIGHT (width
+  // follows the image's true aspect ratio), so `scale` lets a single book
+  // be shown shorter/taller than its neighbours while staying uncropped —
+  // e.g. scale={0.75} renders a cover at three-quarters the height.
+  const base =
     size === "lg"
-      ? "h-[28rem] w-[19rem]"
+      ? { w: 19, h: 28 }
       : size === "sm"
-      ? "h-44 w-28"
-      : "h-72 w-48";
+      ? { w: 7, h: 11 }
+      : { w: 12, h: 18 };
+  const h = base.h * scale;
+  const w = base.w * scale;
 
   // Prefer a real uploaded image when available; otherwise fall back to
   // the generated SVG cover so books without uploaded images still render.
   const firstImage = book.images?.[0];
   if (firstImage) {
-    // Fixed width per size; height follows the image's native aspect ratio
-    // so we never crop or letterbox an uploaded cover (the source photos
-    // come at varying ratios — paperback, hardcover, etc.).
-    const imgWidth =
-      size === "lg" ? "w-[19rem]" : size === "sm" ? "w-28" : "w-48";
     const requestedWidth = size === "lg" ? 800 : size === "sm" ? 240 : 480;
     const url = urlForImage(firstImage).width(requestedWidth).auto("format").url();
     return (
-      <div
-        className={`relative ${imgWidth} shrink-0 overflow-hidden shadow-[6px_6px_0_rgba(31,24,18,0.10),0_18px_40px_-15px_rgba(31,24,18,0.45)]`}
-      >
+      <div className="relative inline-block overflow-hidden shadow-[6px_6px_0_rgba(31,24,18,0.10),0_18px_40px_-15px_rgba(31,24,18,0.45)]">
         <img
           src={url}
           alt={firstImage.alt ?? book.title}
-          className="block h-auto w-full"
+          className="block w-auto"
+          style={{ height: `${h}rem` }}
           loading="lazy"
         />
       </div>
@@ -41,8 +49,8 @@ export function BookCover({ book, size = "md" }: { book: Book; size?: "sm" | "md
 
   return (
     <div
-      className={`relative ${dims} shrink-0 overflow-hidden shadow-[6px_6px_0_rgba(31,24,18,0.10),0_18px_40px_-15px_rgba(31,24,18,0.45)]`}
-      style={{ backgroundColor: bg }}
+      className="relative shrink-0 overflow-hidden shadow-[6px_6px_0_rgba(31,24,18,0.10),0_18px_40px_-15px_rgba(31,24,18,0.45)]"
+      style={{ width: `${w}rem`, height: `${h}rem`, backgroundColor: bg }}
     >
       <div
         className="absolute inset-0 opacity-[0.18]"
