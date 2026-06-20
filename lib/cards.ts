@@ -1,4 +1,4 @@
-import { sanityClient } from "./sanity/client";
+import { sanityClient, SANITY_FETCH_OPTIONS } from "./sanity/client";
 import { CARDS_QUERY, CARD_SETTINGS_QUERY } from "./sanity/queries";
 import { urlForImage } from "./sanity/image";
 
@@ -62,8 +62,12 @@ export async function getCardsPageData(): Promise<{
   settings?: CardSettings;
 }> {
   const [rawCards, rawSettings] = await Promise.all([
-    sanityClient.fetch<SanityCard[]>(CARDS_QUERY),
-    sanityClient.fetch<SanitySettings | null>(CARD_SETTINGS_QUERY),
+    sanityClient.fetch<SanityCard[]>(CARDS_QUERY, {}, SANITY_FETCH_OPTIONS),
+    sanityClient.fetch<SanitySettings | null>(
+      CARD_SETTINGS_QUERY,
+      {},
+      SANITY_FETCH_OPTIONS,
+    ),
   ]);
 
   const cards: PhotoCard[] = (rawCards ?? [])

@@ -1,4 +1,4 @@
-import { sanityClient } from "./sanity/client";
+import { sanityClient, SANITY_FETCH_OPTIONS } from "./sanity/client";
 import {
   BOOKS_QUERY,
   BOOK_BY_SLUG_QUERY,
@@ -95,7 +95,11 @@ function toBook(d: SanityBook): Book {
 const LAST_BOOK_SLUG = "stones-of-the-seven-hills";
 
 export async function getBooks(): Promise<Book[]> {
-  const docs = await sanityClient.fetch<SanityBook[]>(BOOKS_QUERY);
+  const docs = await sanityClient.fetch<SanityBook[]>(
+    BOOKS_QUERY,
+    {},
+    SANITY_FETCH_OPTIONS,
+  );
   const books = docs.map(toBook);
   const idx = books.findIndex((b) => b.slug === LAST_BOOK_SLUG);
   if (idx !== -1) {
@@ -106,15 +110,21 @@ export async function getBooks(): Promise<Book[]> {
 }
 
 export async function getBook(slug: string): Promise<Book | undefined> {
-  const doc = await sanityClient.fetch<SanityBook | null>(BOOK_BY_SLUG_QUERY, {
-    slug,
-  });
+  const doc = await sanityClient.fetch<SanityBook | null>(
+    BOOK_BY_SLUG_QUERY,
+    { slug },
+    SANITY_FETCH_OPTIONS,
+  );
   return doc ? toBook(doc) : undefined;
 }
 
 export async function getBookSlugs(): Promise<string[]> {
   try {
-    const slugs = await sanityClient.fetch<string[]>(BOOK_SLUGS_QUERY);
+    const slugs = await sanityClient.fetch<string[]>(
+      BOOK_SLUGS_QUERY,
+      {},
+      SANITY_FETCH_OPTIONS,
+    );
     // eslint-disable-next-line no-console
     console.log(
       `[sanity] getBookSlugs returned ${slugs?.length ?? 0} slugs:`,

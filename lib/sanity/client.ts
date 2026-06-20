@@ -29,3 +29,18 @@ export const sanityClient = createClient({
   useCdn: false,
   token: process.env.SANITY_API_READ_TOKEN,
 });
+
+// Pass these options to every sanityClient.fetch() call.
+//
+// We're a Next.js static export. At build time Next routes Sanity's fetch
+// through its persistent Data Cache (.next/cache), which Render restores
+// between deploys to speed builds up. Without a TTL, Next treats cached
+// Sanity responses as fresh forever and replays them on the next deploy —
+// so content the author publishes (a new Stripe link, an edited post)
+// never appears until the build cache is cleared by hand.
+//
+// A short revalidate gives those cache entries a finite lifetime. Because
+// deploys are always minutes apart, every build sees the previous entry as
+// stale and refetches the current published content. A positive revalidate
+// keeps the routes fully static, so it stays compatible with output:export.
+export const SANITY_FETCH_OPTIONS = { next: { revalidate: 10 } } as const;

@@ -1,5 +1,5 @@
 import type { PortableTextBlock } from "@portabletext/react";
-import { sanityClient } from "./sanity/client";
+import { sanityClient, SANITY_FETCH_OPTIONS } from "./sanity/client";
 import {
   POSTS_QUERY,
   POST_BY_SLUG_QUERY,
@@ -51,20 +51,30 @@ function toPost(d: SanityPost): Post {
 }
 
 export async function getPosts(): Promise<Post[]> {
-  const docs = await sanityClient.fetch<SanityPost[]>(POSTS_QUERY);
+  const docs = await sanityClient.fetch<SanityPost[]>(
+    POSTS_QUERY,
+    {},
+    SANITY_FETCH_OPTIONS,
+  );
   return docs.map(toPost);
 }
 
 export async function getPost(slug: string): Promise<Post | undefined> {
-  const doc = await sanityClient.fetch<SanityPost | null>(POST_BY_SLUG_QUERY, {
-    slug,
-  });
+  const doc = await sanityClient.fetch<SanityPost | null>(
+    POST_BY_SLUG_QUERY,
+    { slug },
+    SANITY_FETCH_OPTIONS,
+  );
   return doc ? toPost(doc) : undefined;
 }
 
 export async function getPostSlugs(): Promise<string[]> {
   try {
-    const slugs = await sanityClient.fetch<string[]>(POST_SLUGS_QUERY);
+    const slugs = await sanityClient.fetch<string[]>(
+      POST_SLUGS_QUERY,
+      {},
+      SANITY_FETCH_OPTIONS,
+    );
     // eslint-disable-next-line no-console
     console.log(`[sanity] getPostSlugs returned ${slugs?.length ?? 0} slugs`);
     return slugs ?? [];
