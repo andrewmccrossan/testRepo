@@ -14,16 +14,21 @@ export function BookCover({ book, size = "md" }: { book: Book; size?: "sm" | "md
   // the generated SVG cover so books without uploaded images still render.
   const firstImage = book.images?.[0];
   if (firstImage) {
-    const width = size === "lg" ? 800 : size === "sm" ? 240 : 480;
-    const url = urlForImage(firstImage).width(width).auto("format").url();
+    // Fixed width per size; height follows the image's native aspect ratio
+    // so we never crop or letterbox an uploaded cover (the source photos
+    // come at varying ratios — paperback, hardcover, etc.).
+    const imgWidth =
+      size === "lg" ? "w-[19rem]" : size === "sm" ? "w-28" : "w-48";
+    const requestedWidth = size === "lg" ? 800 : size === "sm" ? 240 : 480;
+    const url = urlForImage(firstImage).width(requestedWidth).auto("format").url();
     return (
       <div
-        className={`relative ${dims} shrink-0 overflow-hidden shadow-[6px_6px_0_rgba(31,24,18,0.10),0_18px_40px_-15px_rgba(31,24,18,0.45)]`}
+        className={`relative ${imgWidth} shrink-0 overflow-hidden shadow-[6px_6px_0_rgba(31,24,18,0.10),0_18px_40px_-15px_rgba(31,24,18,0.45)]`}
       >
         <img
           src={url}
           alt={firstImage.alt ?? book.title}
-          className="absolute inset-0 h-full w-full object-cover"
+          className="block h-auto w-full"
           loading="lazy"
         />
       </div>

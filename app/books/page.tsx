@@ -22,7 +22,7 @@ export default async function BooksPage() {
       </section>
 
       <section className="container-wide pb-16">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto grid max-w-4xl grid-cols-1 gap-10 md:grid-cols-2">
           {books.map((book) => (
             <BookCard key={book.slug} book={book} />
           ))}
