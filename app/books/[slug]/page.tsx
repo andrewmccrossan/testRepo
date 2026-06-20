@@ -87,9 +87,6 @@ export default async function BookDetailPage({
                   {secondary.label}
                 </a>
               )}
-              <p className="font-serif text-sm italic text-ink-soft">
-                Free shipping within the EU on direct orders.
-              </p>
             </div>
           </div>
         </div>
