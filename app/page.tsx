@@ -3,7 +3,6 @@ import { getBooks } from "@/lib/books";
 import { getPosts } from "@/lib/posts";
 import { BookCover } from "@/components/BookCover";
 import { OrnamentDivider, LaurelMotif } from "@/components/Ornament";
-import { NewsletterForm } from "@/components/NewsletterForm";
 
 // Greg's account of his books, in his own voice (lightly copyedited). Each
 // entry becomes a titled block in the "About my books" section below.
@@ -192,24 +191,6 @@ export default async function HomePage() {
               </Link>
             </article>
           ))}
-        </div>
-      </section>
-
-      {/* Newsletter */}
-      <section className="relative mt-12 border-y border-stone/50 bg-parchment-light/40">
-        <div className="container-wide grid grid-cols-1 items-center gap-10 py-16 md:grid-cols-[1fr,1fr]">
-          <div>
-            <p className="eyebrow">Subscribe</p>
-            <h2 className="mt-3 font-display text-3xl uppercase tracking-wide text-ink md:text-4xl">
-              Letters from Rome
-            </h2>
-            <p className="mt-4 max-w-md font-serif text-lg leading-relaxed text-ink-soft">
-              A short note, roughly monthly, with one essay, one image, and one
-              recommended thing to read. No advertising. No tracking. Easy to
-              leave.
-            </p>
-          </div>
-          <NewsletterForm />
         </div>
       </section>
     </>
