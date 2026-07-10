@@ -1,10 +1,53 @@
 import Link from "next/link";
-import { site } from "@/lib/site";
 import { getBooks } from "@/lib/books";
 import { getPosts } from "@/lib/posts";
 import { BookCover } from "@/components/BookCover";
 import { OrnamentDivider, LaurelMotif } from "@/components/Ornament";
 import { NewsletterForm } from "@/components/NewsletterForm";
+
+// Greg's account of his books, in his own voice (lightly copyedited). Each
+// entry becomes a titled block in the "About my books" section below.
+const bookStories: { title: string; note?: string; body: string }[] = [
+  {
+    title: "Sacred Places: Rediscovering the Churches of Rome",
+    note: "A large coffee-table book — more than 800 pages.",
+    body:
+      "My first book is about sixty of my favorite churches in Rome. I got the idea during a visit with two of my sons in the year 2000. We returned to San Lorenzo fuori le mura, and I noticed that several of the mosaic tesserae in the frieze on the portico had fallen off since my last visit. Around this time I learned that most churches in Rome are owned by the state — not the Vatican-owned basilicas like St. Peter’s and St. Paul’s — and that most Italians no longer go to Mass, so many of the churches sit nearly deserted. I grew worried about their future; I knew all too well the fate of Hagia Sophia and other great churches in the East. And so I decided to photograph the churches to preserve them for posterity. The book kept growing. As I learned from the many texts I acquired, and from my now almost twice-yearly visits, I added description to the photographs until there was as much text as image — and the book passed 800 pages. If you have never been, it will take you through each of these stunning churches: who built them and why, the principal artwork, and the faith embedded throughout. Some are ancient, some medieval, some Renaissance, and many baroque.",
+  },
+  {
+    title: "Sacred Places: An Epic Journey through Sixty Churches in Eleven Walks",
+    note: "The complete guide.",
+    body:
+      "After the large book there was a demand for a smaller, condensed guidebook version — and so came my second book: the same sixty churches, organized into eleven walks you can take on foot.",
+  },
+  {
+    title: "The Holy Pulpits of Tuscany",
+    body:
+      "In my reading I came to know the thirteenth-century pioneer Nicola Pisano and the series of pulpits he and his son carved across Tuscany and Umbria. That led my wife and me to make a pilgrimage to them — and became my third book.",
+  },
+  {
+    title: "Due Cento Luoghi",
+    note: "Two hundred places — a compact spiral guide.",
+    body:
+      "Next came a desire to point out what I felt were the two hundred most important sites a visitor must see. This is the small spiral guide to all of them.",
+  },
+  {
+    title: "Francesco Borromini: The Complete Guide",
+    body:
+      "In my visits I came to greatly admire the inventive, chimeric baroque architecture of Francesco Borromini. I spent several years reading about the man, studying his works, and photographing his buildings. He left a single work describing his intentions at the Oratory and Casa dei Filippini; taking my cue from it, I wrote a simulated Borromini-led tour through the rest of his buildings.",
+  },
+  {
+    title: "The Fountains of Rome",
+    body:
+      "A photographic tour through all of Rome’s magnificent fountains — a collection unparalleled anywhere in the world — with, I hope, helpful descriptions along the way.",
+  },
+  {
+    title: "Greg Pulles’ Illustrated Walks in Rome",
+    note: "In progress.",
+    body:
+      "I have now finished the manuscript for my latest book, organized by the twenty-four rioni of the city. For the moment it is stalled — too long for a single volume — so I am exploring splitting it into three volumes, plus an app.",
+  },
+];
 
 export default async function HomePage() {
   const [books, posts] = await Promise.all([getBooks(), getPosts()]);
@@ -66,36 +109,46 @@ export default async function HomePage() {
 
       <OrnamentDivider className="container-wide" />
 
-      {/* About the author */}
-      <section className="container-prose py-20 text-center">
-        <p className="eyebrow">From the desk of {site.author}</p>
-        <p className="mt-6 font-serif text-2xl leading-relaxed text-ink">
-          &ldquo;Rome teaches a particular discipline: to suspect that the
-          building you are walking past has more memory than you do, and that
-          this is good news.&rdquo;
-        </p>
-        <p className="mt-4 font-display text-xs uppercase tracking-[0.3em] text-ink-soft">
-          &mdash; {site.author}
-        </p>
-      </section>
+      {/* About my books */}
+      <section className="container-prose py-20">
+        <div className="text-center">
+          <p className="eyebrow">From the desk of Greg Pulles</p>
+          <h2 className="mt-4 font-display text-4xl uppercase tracking-wide text-ink md:text-5xl">
+            About my books
+          </h2>
+          <OrnamentDivider className="mt-10" />
+        </div>
 
-      {/* Three pillars */}
-      <section className="container-wide py-16">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          <PillarCard
-            label="Books"
-            title="A small library, carefully made."
-            body="Three published volumes on Roman art, the Baroque, and the old liturgy &mdash; with more in preparation."
-            href="/books"
-            cta="See the books"
-          />
-          <PillarCard
-            label="Blog"
-            title="Essays from the studio."
-            body="Short writings on icons, Bernini, Aventine churches, and whatever else the week in Rome has offered."
-            href="/blog"
-            cta="Read the blog"
-          />
+        <div className="mt-14 space-y-12">
+          {bookStories.map((b) => (
+            <div key={b.title} className="border-l-2 border-gold/60 pl-6">
+              <h3 className="font-display text-xl uppercase leading-snug tracking-wide text-ink">
+                {b.title}
+              </h3>
+              {b.note && (
+                <p className="mt-1 font-serif italic text-ink-soft">{b.note}</p>
+              )}
+              <p className="mt-3 font-serif text-lg leading-relaxed text-ink/85">
+                {b.body}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-14 rounded border border-stone/50 bg-parchment-light/40 p-8 text-center">
+          <p className="font-serif text-lg leading-relaxed text-ink/85">
+            Finally, I have made small greeting cards featuring some of my
+            photography &mdash; lovely for a note, with more to come. There are
+            twelve to choose from right now.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-4">
+            <Link href="/books" className="btn-primary">
+              Browse the Books
+            </Link>
+            <Link href="/cards" className="btn-ghost">
+              See the Greeting Cards
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -160,34 +213,5 @@ export default async function HomePage() {
         </div>
       </section>
     </>
-  );
-}
-
-function PillarCard({
-  label,
-  title,
-  body,
-  href,
-  cta,
-}: {
-  label: string;
-  title: string;
-  body: string;
-  href: string;
-  cta: string;
-}) {
-  return (
-    <Link href={href} className="card group flex h-full flex-col p-8">
-      <p className="eyebrow">{label}</p>
-      <h3 className="mt-3 font-display text-2xl uppercase tracking-wide text-ink">
-        {title}
-      </h3>
-      <p className="mt-4 flex-1 font-serif text-base leading-relaxed text-ink/85">
-        {body}
-      </p>
-      <p className="mt-6 font-display text-xs uppercase tracking-[0.22em] text-crimson group-hover:text-crimson-dark">
-        {cta} &rarr;
-      </p>
-    </Link>
   );
 }
