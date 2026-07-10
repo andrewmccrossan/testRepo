@@ -21,13 +21,13 @@ export default async function HomePage() {
       <section className="relative overflow-hidden">
         <div className="container-wide grid grid-cols-1 items-center gap-16 pt-16 pb-24 lg:grid-cols-[1.1fr,0.9fr]">
           <div className="relative">
+            {/* Semantic page title for SEO and screen readers; visually the
+                page leads with Greg's greeting as prose instead. */}
+            <h1 className="sr-only">Italy by Greg Pulles</h1>
             <p className="eyebrow">Benvenuti</p>
-            <h1 className="mt-6 font-display text-5xl uppercase leading-[1.05] tracking-wide text-ink md:text-6xl lg:text-7xl">
-              Hi. I&rsquo;m Greg&nbsp;Pulles
-            </h1>
-            <p className="mt-5 max-w-xl font-serif text-2xl italic leading-snug text-ink-soft">
-              A retired attorney, currently a grade school Latin teacher, and
-              lover of all things Italian.
+            <p className="mt-8 max-w-xl font-serif text-2xl leading-relaxed text-ink md:text-3xl">
+              Hi. I&rsquo;m Greg Pulles, a retired attorney, currently a grade
+              school Latin teacher, and lover of all things Italian.
             </p>
             <p className="mt-6 max-w-xl font-serif text-lg leading-relaxed text-ink/85">
               Through this website I hope to share my loves and interests.
