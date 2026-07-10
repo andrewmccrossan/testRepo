@@ -1,10 +1,57 @@
 import Link from "next/link";
-import { site } from "@/lib/site";
+import { getAboutBody } from "@/lib/about";
+import { PortableBody } from "@/components/PortableBody";
 import { OrnamentDivider } from "@/components/Ornament";
 
 export const metadata = { title: "About" };
 
-export default function AboutPage() {
+// Shown until an "About Page" document is created and published in Sanity.
+// Mirrors Greg's starter copy so the page is populated on first deploy;
+// once the Sanity document exists, its body takes over automatically.
+function AboutFallback() {
+  return (
+    <>
+      <p className="drop-cap">
+        Hi. I&rsquo;m Greg Pulles, a retired attorney, currently a grade school
+        Latin teacher, and lover of all things Italian.
+      </p>
+
+      <h2>Why this website?</h2>
+
+      <p>
+        I came from a Catholic family of eight, the pope always on our dining
+        room wall. I always dreamed of going to Rome. When I was finally able to
+        go in 1996 I was stunned: the faith, saints, architecture, painting,
+        sculpture, and ancient history overwhelmed me. I have been back to Italy
+        twenty times now, taken a million photographs, visited every church,
+        gone down every street and alley, looked at every piece of art and
+        architecture, toured every ancient site. I have written and photographed
+        six books and amassed a library of books covering just about everything
+        there is in Italy.
+      </p>
+
+      <p>
+        Through this website I hope to share my loves and interests. There are
+        so many sources on Italy, but none captures for me the essence, the
+        importance, the truly significant aspects of the thousands and thousands
+        of sights to see. I want to point out what I believe every visitor
+        should know about what they are seeing. In my biweekly blogs I will
+        provide a detailed and informative look at the hundreds of sites you
+        must visit in Rome and beyond.
+      </p>
+
+      <p>
+        The first blog will be a series, a comprehensive look at the three
+        baroque masters Bernini, Borromini, and da Cortona, and the six baroque
+        popes who made their work possible and who impelled them.
+      </p>
+    </>
+  );
+}
+
+export default async function AboutPage() {
+  const body = await getAboutBody();
+
   return (
     <article className="container-prose pt-16 pb-12">
       <header className="text-center">
@@ -16,43 +63,7 @@ export default function AboutPage() {
       </header>
 
       <div className="prose-roman mt-12">
-        <p className="drop-cap">
-          {site.authorBlurb} I write slowly and travel cheaply, mostly in the
-          old Roman quarters east of the Tiber, and occasionally in Ravenna,
-          Sicily, and the smaller hill towns whose churches the guidebooks
-          ignore. The work that appears on this site &mdash; books, blog
-          entries, the interactive manuscript &mdash; comes from a single
-          rhythm: walk, look, read, walk again, write.
-        </p>
-
-        <h2>Why this site</h2>
-
-        <p>
-          For a long time I kept three separate accounts of the same project:
-          a folder of essays, a list of half-finished books, and a notebook of
-          interactive ideas I did not know how to publish. This site is the
-          attempt to put them in one room. The blog is where the thinking
-          happens; the books are where the thinking finishes; the interactive
-          chapters are an experiment in the space between the two.
-        </p>
-
-        <h2>How to read</h2>
-
-        <p>
-          Slowly. The essays are short and the chapters are long and neither is
-          designed for a phone in a queue. If you have ten minutes, read a
-          blog entry. If you have an evening, open the interactive
-          manuscript and bring a glass of something.
-        </p>
-
-        <h2>Get in touch</h2>
-
-        <p>
-          Letters, corrections, and reading recommendations are always welcome
-          at{" "}
-          <a href={`mailto:${site.email}`}>{site.email}</a>. I read everything,
-          even when I do not answer quickly.
-        </p>
+        {body ? <PortableBody value={body} /> : <AboutFallback />}
       </div>
 
       <OrnamentDivider className="mt-16" />

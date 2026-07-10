@@ -96,3 +96,9 @@ export const CARD_SETTINGS_QUERY = /* groq */ `
     intro
   }
 `;
+
+export const ABOUT_QUERY = /* groq */ `
+  *[_type == "aboutPage"][0] {
+    body
+  }
+`;
