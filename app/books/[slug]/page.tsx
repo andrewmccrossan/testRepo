@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBook, getBookSlugs } from "@/lib/books";
+import { getBookReviews } from "@/lib/reviews";
 import { BookCover } from "@/components/BookCover";
 import { BookGallery } from "@/components/BookGallery";
 import { OrnamentDivider } from "@/components/Ornament";
@@ -29,6 +30,7 @@ export default async function BookDetailPage({
 
   const primaryHref = book.buy.primary.href;
   const secondary = book.buy.secondary;
+  const reviews = getBookReviews(params.slug);
 
   return (
     <>
@@ -100,6 +102,36 @@ export default async function BookDetailPage({
             <span className="font-display text-5xl leading-none text-crimson">&ldquo;</span>
             <span className="italic">{book.excerpt}</span>
           </blockquote>
+        </section>
+      )}
+
+      {reviews.length > 0 && (
+        <section className="container-prose pb-20">
+          <OrnamentDivider className="mb-12" />
+          <div className="text-center">
+            <p className="eyebrow">Vox Lectorum</p>
+            <h2 className="mt-3 font-display text-3xl uppercase tracking-wide text-ink md:text-4xl">
+              Reader Reviews
+            </h2>
+          </div>
+
+          <div className="mt-12 space-y-12">
+            {reviews.map((review, i) => (
+              <blockquote key={i} className="border-l-2 border-gold/60 pl-6">
+                {review.paragraphs.map((paragraph, j) => (
+                  <p
+                    key={j}
+                    className={`font-serif text-lg italic leading-relaxed text-ink/85 ${j > 0 ? "mt-4" : ""}`}
+                  >
+                    {paragraph}
+                  </p>
+                ))}
+                <footer className="mt-4 font-display text-xs uppercase tracking-[0.3em] text-ink-soft">
+                  &mdash; {review.attribution}
+                </footer>
+              </blockquote>
+            ))}
+          </div>
         </section>
       )}
     </>
