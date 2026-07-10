@@ -25,11 +25,7 @@ export default async function HomePage() {
                 page leads with Greg's greeting as prose instead. */}
             <h1 className="sr-only">Italy by Greg Pulles</h1>
             <p className="eyebrow">Benvenuti</p>
-            <p className="mt-8 max-w-xl font-serif text-2xl leading-relaxed text-ink md:text-3xl">
-              Hi. I&rsquo;m Greg Pulles, a retired attorney, currently a grade
-              school Latin teacher, and lover of all things Italian.
-            </p>
-            <p className="mt-6 max-w-xl font-serif text-lg leading-relaxed text-ink/85">
+            <p className="mt-8 max-w-xl font-serif text-xl leading-relaxed text-ink md:text-2xl">
               Through this website I hope to share my loves and interests.
               There are so many sources on Italy, but none captures for me the
               essence, the importance, the truly significant aspects of the
