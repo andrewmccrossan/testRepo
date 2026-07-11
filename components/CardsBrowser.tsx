@@ -147,12 +147,19 @@ export function CardsBrowser({
                 )}
               </div>
               <div className="flex flex-1 flex-col justify-between gap-3 p-3">
-                <p
-                  className="font-display text-[12px] uppercase leading-snug tracking-[0.16em] text-ink"
-                  title={card.title}
-                >
-                  {card.title}
-                </p>
+                <div>
+                  <p
+                    className="font-display text-[12px] uppercase leading-snug tracking-[0.16em] text-ink"
+                    title={card.title}
+                  >
+                    {card.title}
+                  </p>
+                  {card.description && (
+                    <p className="mt-1 font-serif text-xs italic leading-snug text-ink-soft">
+                      {card.description}
+                    </p>
+                  )}
+                </div>
                 <Stepper
                   qty={qty}
                   onIncrement={() => increment(card.code)}
