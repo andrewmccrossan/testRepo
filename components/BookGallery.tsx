@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { BookImage } from "@/lib/books";
 import { urlForImage } from "@/lib/sanity/image";
 
@@ -12,6 +12,7 @@ export function BookGallery({
   title: string;
 }) {
   const [index, setIndex] = useState(0);
+  const [lightbox, setLightbox] = useState<number | null>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -46,10 +47,55 @@ export function BookGallery({
     });
   };
 
+  const stepLightbox = useCallback(
+    (delta: number) => {
+      setLightbox((cur) =>
+        cur === null ? cur : (cur + delta + images.length) % images.length,
+      );
+    },
+    [images.length],
+  );
+
+  const closeLightbox = useCallback(() => {
+    setLightbox((cur) => {
+      // Sync the inline carousel to wherever the viewer navigated.
+      if (cur !== null && scrollerRef.current) {
+        scrollerRef.current.scrollTo({
+          left: scrollerRef.current.clientWidth * cur,
+        });
+      }
+      return null;
+    });
+  }, []);
+
+  // While the lightbox is open: lock page scroll and handle keyboard
+  // navigation (Escape closes, arrows move).
+  const lightboxOpen = lightbox !== null;
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeLightbox();
+      else if (e.key === "ArrowLeft") stepLightbox(-1);
+      else if (e.key === "ArrowRight") stepLightbox(1);
+    };
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [lightboxOpen, closeLightbox, stepLightbox]);
+
   if (images.length === 0) return null;
 
+  const current = lightbox !== null ? images[lightbox] : null;
+  const currentUrl = current
+    ? urlForImage(current).width(2000).auto("format").url()
+    : null;
+
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full max-w-xl">
       <div
         ref={scrollerRef}
         className="no-scrollbar flex w-full snap-x snap-mandatory overflow-x-auto"
@@ -66,15 +112,21 @@ export function BookGallery({
               aria-label={`Image ${i + 1} of ${images.length}`}
             >
               {/* Square window; each photo keeps its native aspect ratio,
-                  letterboxed in cream like the cards grid. */}
-              <div className="relative aspect-square w-full overflow-hidden bg-parchment-light shadow-[6px_6px_0_rgba(31,24,18,0.10),0_18px_40px_-15px_rgba(31,24,18,0.45)]">
+                  letterboxed in cream like the cards grid. Click to open
+                  the full image in a lightbox. */}
+              <button
+                type="button"
+                onClick={() => setLightbox(i)}
+                className="relative block aspect-square w-full cursor-zoom-in overflow-hidden bg-parchment-light shadow-[6px_6px_0_rgba(31,24,18,0.10),0_18px_40px_-15px_rgba(31,24,18,0.45)]"
+                aria-label={`View image ${i + 1} full size`}
+              >
                 <img
                   src={url}
                   alt={img.alt ?? `${title} — image ${i + 1}`}
                   className="absolute inset-0 h-full w-full object-contain"
                   loading={i === 0 ? "eager" : "lazy"}
                 />
-              </div>
+              </button>
               {img.caption && (
                 <figcaption className="mt-3 px-2 text-center font-serif text-sm italic text-ink-soft">
                   {img.caption}
@@ -118,6 +170,64 @@ export function BookGallery({
           >
             Next &rarr;
           </button>
+        </div>
+      )}
+
+      {current && currentUrl && lightbox !== null && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${title} — image ${lightbox + 1} of ${images.length}`}
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-ink/90 p-4 backdrop-blur-sm"
+          onClick={closeLightbox}
+        >
+          <button
+            type="button"
+            onClick={closeLightbox}
+            aria-label="Close"
+            className="absolute right-4 top-4 font-display text-sm uppercase tracking-[0.22em] text-parchment-light/80 transition hover:text-parchment-light"
+          >
+            Close &times;
+          </button>
+
+          <figure
+            className="flex max-h-full max-w-full flex-col items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={currentUrl}
+              alt={current.alt ?? `${title} — image ${lightbox + 1}`}
+              className="max-h-[80vh] max-w-[92vw] object-contain shadow-[0_25px_60px_-15px_rgba(0,0,0,0.6)]"
+            />
+            <figcaption className="mt-4 text-center font-serif text-sm italic text-parchment-light/90">
+              {current.caption ? `${current.caption} — ` : ""}
+              {lightbox + 1} / {images.length}
+            </figcaption>
+          </figure>
+
+          {images.length > 1 && (
+            <div
+              className="mt-4 flex items-center gap-10"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={() => stepLightbox(-1)}
+                aria-label="Previous image"
+                className="font-display text-sm uppercase tracking-[0.22em] text-parchment-light/80 transition hover:text-parchment-light"
+              >
+                &larr; Prev
+              </button>
+              <button
+                type="button"
+                onClick={() => stepLightbox(1)}
+                aria-label="Next image"
+                className="font-display text-sm uppercase tracking-[0.22em] text-parchment-light/80 transition hover:text-parchment-light"
+              >
+                Next &rarr;
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
