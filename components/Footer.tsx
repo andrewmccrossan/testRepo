@@ -52,9 +52,6 @@ export function Footer() {
               </a>
               .
             </p>
-            <p className="mt-3 font-serif text-sm italic text-ink-soft">
-              Replies travel by post; please be patient.
-            </p>
           </div>
         </div>
 
