@@ -4,7 +4,7 @@ export const site = {
   author: "A. M. Caelius",
   authorBlurb:
     "Writer and independent scholar working at the intersection of Roman antiquity, sacred art, and the living tradition of Catholic Rome.",
-  email: "hello@example.com",
+  email: "greg.pulles@gmail.com",
   nav: [
     { href: "/", label: "Home" },
     { href: "/books", label: "Books" },
