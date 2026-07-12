@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/decode/", "/stripe-setup-instructions/"],
+      disallow: ["/decode/", "/thanks/", "/stripe-setup-instructions/"],
     },
     sitemap: "https://italybygreg.com/sitemap.xml",
   };
