@@ -25,9 +25,6 @@ export function Footer() {
             <p className="font-display text-lg uppercase tracking-[0.22em] text-ink">
               {renderWordmark(site.name)}
             </p>
-            <p className="mt-3 max-w-xs font-serif text-sm italic text-ink-soft">
-              {site.tagline}
-            </p>
           </div>
 
           <div>

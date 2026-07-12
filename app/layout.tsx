@@ -23,10 +23,11 @@ const cormorant = Cormorant_Garamond({
 export const metadata: Metadata = {
   metadataBase: new URL("https://italybygreg.com"),
   title: {
-    default: `${site.name} — ${site.tagline}`,
+    default: site.name,
     template: `%s — ${site.name}`,
   },
-  description: site.tagline,
+  description:
+    "Books, blog, and photographic greeting cards on the churches, art, and history of Rome and Italy, by Greg Pulles.",
 };
 
 export default function RootLayout({
