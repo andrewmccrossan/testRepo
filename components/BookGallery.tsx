@@ -65,11 +65,13 @@ export function BookGallery({
               aria-roledescription="slide"
               aria-label={`Image ${i + 1} of ${images.length}`}
             >
-              <div className="relative aspect-[2/3] w-full overflow-hidden bg-stone/30 shadow-[6px_6px_0_rgba(31,24,18,0.10),0_18px_40px_-15px_rgba(31,24,18,0.45)]">
+              {/* Square window; each photo keeps its native aspect ratio,
+                  letterboxed in cream like the cards grid. */}
+              <div className="relative aspect-square w-full overflow-hidden bg-parchment-light shadow-[6px_6px_0_rgba(31,24,18,0.10),0_18px_40px_-15px_rgba(31,24,18,0.45)]">
                 <img
                   src={url}
                   alt={img.alt ?? `${title} — image ${i + 1}`}
-                  className="absolute inset-0 h-full w-full object-cover"
+                  className="absolute inset-0 h-full w-full object-contain"
                   loading={i === 0 ? "eager" : "lazy"}
                 />
               </div>
