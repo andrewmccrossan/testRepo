@@ -28,7 +28,7 @@ export function Header() {
           </span>
           <span className="hidden h-3 w-px bg-gold/60 sm:block" />
           <span className="hidden font-serif text-sm italic text-ink-soft sm:block">
-            est. mmxix
+            est. mmvii
           </span>
         </Link>
 
