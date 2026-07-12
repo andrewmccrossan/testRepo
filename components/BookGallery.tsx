@@ -95,9 +95,12 @@ export function BookGallery({
     : null;
 
   return (
-    // Sized down a step on lg screens where the gallery sits beside the
-    // book text, so the text column keeps a readable width.
-    <div className="w-full max-w-3xl lg:max-w-xl xl:max-w-3xl">
+    // The gallery lives in an auto-sized grid column on the book page, so
+    // it needs explicit widths — "w-full" alone collapses the column to the
+    // image's minimum. Fixed steps per breakpoint: stacked layouts cap at
+    // max-w-xl; beside the text it grows with the window from 26rem up to
+    // 36rem on very wide screens.
+    <div className="w-full max-w-xl lg:w-[26rem] xl:w-[32rem] 2xl:w-[36rem]">
       <div
         ref={scrollerRef}
         className="no-scrollbar flex w-full snap-x snap-mandatory overflow-x-auto"
