@@ -66,6 +66,16 @@ export default async function CardsPage() {
       </section>
 
       <section className="container-wide pb-40">
+        <OrnamentDivider className="mb-10" />
+        <div className="mb-10 text-center">
+          <p className="eyebrow">The Collection</p>
+          <h2 className="mt-3 font-display text-3xl uppercase tracking-wide text-ink md:text-4xl">
+            Choose Your Photographs
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl font-serif text-lg italic leading-relaxed text-ink-soft">
+            Pick any combination of {packSize} to build your pack.
+          </p>
+        </div>
         {cards.length === 0 ? (
           <p className="text-center font-serif text-lg italic text-ink-soft">
             No cards yet &mdash; check back soon.
