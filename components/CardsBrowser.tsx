@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { PhotoCard } from "@/lib/cards";
 
 const STORAGE_KEY = "domus-aurea:card-pack";
@@ -27,6 +27,27 @@ export function CardsBrowser({
   const [selection, setSelection] = useState<Selection>({});
   const [hydrated, setHydrated] = useState(false);
   const [showPanel, setShowPanel] = useState(false);
+  const barRef = useRef<HTMLDivElement | null>(null);
+
+  // The selection bar is position:fixed, so by itself it would cover the
+  // last thing on the page (the footer). Reserve space for it by padding
+  // the body to the bar's rendered height — measured live, since the bar
+  // wraps to two lines on narrow screens and grows when the pack panel
+  // is open.
+  useEffect(() => {
+    const el = barRef.current;
+    if (!el) return;
+    const apply = () => {
+      document.body.style.paddingBottom = `${el.offsetHeight}px`;
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      document.body.style.paddingBottom = "";
+    };
+  }, []);
 
   const cardsByCode = useMemo(() => {
     const m = new Map<string, PhotoCard>();
@@ -177,7 +198,10 @@ export function CardsBrowser({
           on top of the always-visible status bar. Nesting them avoids any
           hardcoded offset between the two — the panel can grow and the
           bar can wrap without colliding. */}
-      <div className="fixed inset-x-0 bottom-0 z-40 flex flex-col border-t border-stone/60 bg-parchment-light/95 backdrop-blur-md shadow-[0_-8px_24px_-12px_rgba(31,24,18,0.30)]">
+      <div
+        ref={barRef}
+        className="fixed inset-x-0 bottom-0 z-40 flex flex-col border-t border-stone/60 bg-parchment-light/95 backdrop-blur-md shadow-[0_-8px_24px_-12px_rgba(31,24,18,0.30)]"
+      >
         {showPanel && selectionEntries.length > 0 && (
           <div className="max-h-[40vh] overflow-y-auto border-b border-stone/40">
             <div className="container-wide py-5">

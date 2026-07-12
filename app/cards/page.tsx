@@ -65,7 +65,7 @@ export default async function CardsPage() {
         </div>
       </section>
 
-      <section className="container-wide pb-40">
+      <section className="container-wide pb-16">
         <OrnamentDivider className="mb-10" />
         <div className="mb-10 text-center">
           <p className="eyebrow">The Collection</p>
