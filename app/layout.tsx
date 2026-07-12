@@ -21,6 +21,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://italybygreg.com"),
   title: {
     default: `${site.name} — ${site.tagline}`,
     template: `%s — ${site.name}`,
