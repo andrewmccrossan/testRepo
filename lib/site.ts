@@ -1,5 +1,6 @@
 export const site = {
   name: "Italy by Greg Pulles",
+  tagline: "Rome — its Faith, Art, and Architecture",
   author: "Greg Pulles",
   email: "greg.pulles@gmail.com",
   nav: [
