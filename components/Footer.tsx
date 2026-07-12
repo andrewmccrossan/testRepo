@@ -32,7 +32,7 @@ export function Footer() {
 
           <div>
             <p className="eyebrow">Wander</p>
-            <ul className="mt-3 space-y-1.5 font-serif text-base">
+            <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 font-serif text-base">
               {site.nav.map((item) => (
                 <li key={item.href}>
                   <Link href={item.href} className="link-underline text-ink-soft hover:text-crimson">
