@@ -95,7 +95,7 @@ export function BookGallery({
     : null;
 
   return (
-    <div className="w-full max-w-xl">
+    <div className="w-full max-w-3xl">
       <div
         ref={scrollerRef}
         className="no-scrollbar flex w-full snap-x snap-mandatory overflow-x-auto"
