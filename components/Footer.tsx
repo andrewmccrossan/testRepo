@@ -55,12 +55,9 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-stone/50 pt-6 sm:flex-row">
+        <div className="mt-12 flex justify-center border-t border-stone/50 pt-6">
           <p className="font-serif text-xs italic text-ink-soft">
             &copy; {new Date().getFullYear()} {site.author}. All rights reserved.
-          </p>
-          <p className="font-display text-[10px] uppercase tracking-[0.3em] text-stone-dark">
-            Sub umbra alarum tuarum
           </p>
         </div>
       </div>

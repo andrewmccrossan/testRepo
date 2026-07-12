@@ -1,7 +1,7 @@
 export const site = {
   name: "Italy by Greg Pulles",
   tagline: "Studies in Roman Art, Faith, and the Long Memory of the West",
-  author: "A. M. Caelius",
+  author: "Greg Pulles",
   authorBlurb:
     "Writer and independent scholar working at the intersection of Roman antiquity, sacred art, and the living tradition of Catholic Rome.",
   email: "greg.pulles@gmail.com",

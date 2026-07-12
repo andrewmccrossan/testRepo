@@ -1,5 +1,6 @@
 import { MotifByName } from "./Ornament";
 import type { Book } from "@/lib/books";
+import { site } from "@/lib/site";
 import { urlForImage } from "@/lib/sanity/image";
 
 export function BookCover({
@@ -96,8 +97,7 @@ export function BookCover({
           className="font-display text-[10px] uppercase tracking-[0.3em]"
           style={{ color: accent }}
         >
-          {/* author placeholder */}
-          A. M. Caelius
+          {site.author}
         </p>
       </div>
 
