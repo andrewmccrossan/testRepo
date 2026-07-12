@@ -151,12 +151,15 @@ export function CardsBrowser({
                   : "border-stone/60 hover:border-gold",
               ].join(" ")}
             >
-              <div className="relative aspect-[5/4] bg-stone/30">
+              {/* Fixed 5:4 window; the photo keeps its native aspect ratio
+                  and is letterboxed in cream — like a print mounted on the
+                  physical card stock. */}
+              <div className="relative aspect-[5/4] bg-parchment-light">
                 <img
                   src={card.imageUrl}
                   alt={card.imageAlt ?? card.title}
                   loading="lazy"
-                  className="absolute inset-0 h-full w-full object-cover"
+                  className="absolute inset-0 h-full w-full object-contain"
                 />
                 {selected && (
                   <span
@@ -229,7 +232,7 @@ export function CardsBrowser({
                       <img
                         src={card.imageUrl}
                         alt={card.imageAlt ?? card.title}
-                        className="aspect-[5/4] h-14 flex-none object-cover"
+                        className="aspect-[5/4] h-14 flex-none bg-parchment-light object-contain"
                       />
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-display text-[12px] uppercase tracking-[0.16em] text-ink">

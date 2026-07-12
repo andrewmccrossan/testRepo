@@ -46,12 +46,10 @@ function toCard(d: SanityCard): PhotoCard | null {
     slug: d.slug,
     title: d.title,
     description: d.description,
-    imageUrl: urlForImage(d.image)
-      .width(900)
-      .height(720)
-      .fit("crop")
-      .auto("format")
-      .url(),
+    // No crop: serve the image at its native aspect ratio. The grid shows
+    // it letterboxed inside a fixed 5:4 box (object-contain), so wide and
+    // tall photographs alike appear whole.
+    imageUrl: urlForImage(d.image).width(900).auto("format").url(),
     imageUrlLarge: urlForImage(d.image).width(1400).auto("format").url(),
     imageAlt: d.image.alt,
   };
