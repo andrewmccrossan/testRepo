@@ -95,7 +95,9 @@ export function BookGallery({
     : null;
 
   return (
-    <div className="w-full max-w-3xl">
+    {/* Sized down a step on lg screens where the gallery sits beside the
+        book text, so the text column keeps a readable width. */}
+    <div className="w-full max-w-3xl lg:max-w-xl xl:max-w-3xl">
       <div
         ref={scrollerRef}
         className="no-scrollbar flex w-full snap-x snap-mandatory overflow-x-auto"
