@@ -15,8 +15,8 @@ export default async function BlogPage() {
           The Blog
         </h1>
         <p className="mx-auto mt-6 max-w-2xl font-serif text-xl italic leading-relaxed text-ink-soft">
-          Notes and essays from the desk and the street. Short, slow,
-          occasionally photographic.
+          In my biweekly blogs I will provide a detailed and informative look
+          at the hundreds of sites you must visit in Rome and beyond.
         </p>
         <OrnamentDivider className="mt-10" />
       </section>
