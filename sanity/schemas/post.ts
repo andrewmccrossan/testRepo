@@ -37,11 +37,6 @@ export const post = defineType({
       },
     }),
     defineField({
-      name: "readingTime",
-      title: 'Reading time (e.g. "7 min read")',
-      type: "string",
-    }),
-    defineField({
       name: "excerpt",
       type: "text",
       rows: 3,

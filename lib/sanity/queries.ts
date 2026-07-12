@@ -9,7 +9,6 @@ export const POSTS_QUERY = /* groq */ `
     subtitle,
     date,
     tag,
-    readingTime,
     excerpt,
     body
   }
@@ -22,7 +21,6 @@ export const POST_BY_SLUG_QUERY = /* groq */ `
     subtitle,
     date,
     tag,
-    readingTime,
     excerpt,
     body
   }

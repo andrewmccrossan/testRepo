@@ -24,10 +24,27 @@ type SanityPost = {
   subtitle?: string;
   date: string;
   tag?: string;
-  readingTime?: string;
   excerpt?: string;
   body?: PortableTextBlock[];
 };
+
+// Reading time is computed at build time from the post body — roughly
+// 200 words per minute, floored at 1 minute — so authors never type it
+// by hand and it can't drift from the actual length.
+function computeReadingTime(body: PortableTextBlock[]): string {
+  let words = 0;
+  for (const block of body) {
+    const children = (block as { children?: { text?: unknown }[] }).children;
+    if (block._type !== "block" || !Array.isArray(children)) continue;
+    for (const child of children) {
+      if (typeof child.text === "string") {
+        words += child.text.split(/\s+/).filter(Boolean).length;
+      }
+    }
+  }
+  const minutes = Math.max(1, Math.round(words / 200));
+  return `${minutes} min read`;
+}
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
@@ -43,7 +60,7 @@ function toPost(d: SanityPost): Post {
     subtitle: d.subtitle ?? "",
     date: d.date,
     dateLabel: dateFormatter.format(new Date(`${d.date}T00:00:00Z`)),
-    readingTime: d.readingTime ?? "",
+    readingTime: computeReadingTime(d.body ?? []),
     tag: d.tag ?? "",
     excerpt: d.excerpt ?? "",
     body: d.body ?? [],
