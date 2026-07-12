@@ -73,7 +73,7 @@ export default async function HomePage() {
 
       {/* Recent posts */}
       <section className="container-wide py-20">
-        <div className="mb-6 flex items-end justify-between">
+        <div className="mb-10 flex items-end justify-between">
           <div>
             <p className="eyebrow">From the Blog</p>
             <h2 className="mt-3 font-display text-4xl uppercase tracking-wide text-ink">
@@ -87,13 +87,6 @@ export default async function HomePage() {
             All entries &rarr;
           </Link>
         </div>
-
-        {/* Greg's own announcement of the opening series */}
-        <p className="mb-10 max-w-3xl font-serif text-lg italic leading-relaxed text-ink-soft">
-          The first blog will be a series, a comprehensive look at the three
-          baroque masters Bernini, Borromini, and da Cortona, and the six
-          baroque popes who made their work possible and who impelled them.
-        </p>
 
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
           {recent.map((post) => (
