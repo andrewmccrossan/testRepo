@@ -92,17 +92,22 @@ export default async function HomePage() {
           {recent.map((post) => (
             <article key={post.slug} className="border-l-2 border-gold/60 pl-6">
               <p className="font-serif text-xs italic text-ink-soft">
-                {post.dateLabel} &middot; {post.tag}
+                {post.dateLabel}
+                {post.tag && <> &middot; {post.tag}</>}
               </p>
               <h3 className="mt-2 font-display text-2xl uppercase tracking-wide text-ink">
                 <Link href={`/blog/${post.slug}`} className="link-underline hover:text-crimson">
                   {post.title}
                 </Link>
               </h3>
-              <p className="mt-2 font-serif italic text-ink-soft">{post.subtitle}</p>
-              <p className="mt-4 font-serif text-base leading-relaxed text-ink/85">
-                {post.excerpt}
-              </p>
+              {post.subtitle && (
+                <p className="mt-2 font-serif italic text-ink-soft">{post.subtitle}</p>
+              )}
+              {post.excerpt && (
+                <p className="mt-4 font-serif text-base leading-relaxed text-ink/85">
+                  {post.excerpt}
+                </p>
+              )}
               <Link
                 href={`/blog/${post.slug}`}
                 className="mt-4 inline-block font-display text-xs uppercase tracking-[0.22em] text-crimson hover:text-crimson-dark"

@@ -36,13 +36,15 @@ export default async function PostPage({
       </Link>
 
       <header className="mt-10 text-center">
-        <p className="eyebrow">{post.tag}</p>
+        {post.tag && <p className="eyebrow">{post.tag}</p>}
         <h1 className="mt-4 font-display text-4xl uppercase leading-tight tracking-wide text-ink md:text-5xl">
           {post.title}
         </h1>
-        <p className="mt-4 font-serif text-2xl italic leading-snug text-ink-soft">
-          {post.subtitle}
-        </p>
+        {post.subtitle && (
+          <p className="mt-4 font-serif text-2xl italic leading-snug text-ink-soft">
+            {post.subtitle}
+          </p>
+        )}
         <p className="mt-6 font-display text-[11px] uppercase tracking-[0.3em] text-ink-soft">
           {post.dateLabel} &middot; {post.readingTime}
         </p>
